@@ -1,0 +1,366 @@
+/* styles/store.css */
+.products-page {
+    padding: 100px 70px 50px;
+    min-height: calc(100vh - 120px);
+    background: #0f0f0f; /* Dark mode */
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.light-mode .products-page {
+    background: #ffffff; /* Light mode */
+}
+
+.products-page h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 50px;
+    text-align: center;
+    margin-bottom: 40px;
+    background: linear-gradient(60deg, #00ccff, #ff4081);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.filter-bar {
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.filter-bar input, .filter-bar select {
+    font-family: 'Poppins', sans-serif;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 25px;
+    background: #2a2a2a;
+    color: #f0f0f0; 
+    font-size: 16px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.light-mode .filter-bar input, body.light-mode .filter-bar select {
+    background: #e0e0e0;
+    color: #333333; 
+}
+
+.carousel {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ff4081; 
+    color: #f0f0f0; 
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+    z-index: 2;
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6); 
+}
+
+body.light-mode .carousel-btn {
+    background: #00ccff; 
+    color: #333333;
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6); 
+}
+
+.carousel-btn:hover {
+    background: #00ccff; 
+    color: #ffffff; 
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6); 
+}
+
+body.light-mode .carousel-btn:hover {
+    background: #ff4081; 
+    color: #333333; 
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8), 0 0 30px rgba(255, 64, 129, 0.6); 
+}
+
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+.games-container {
+    display: flex;
+    gap: 35px;
+    transition: transform 0.5s ease;
+}
+
+.game-card {
+    flex: 0 0 auto;
+    width: 300px;
+    background: #1f1f1f;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 400px;
+}
+
+body.light-mode .game-card {
+    background: #f0f0f0;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+.game-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7);
+}
+
+body.light-mode .game-card:hover {
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+.game-card img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.game-card:hover img {
+    transform: scale(1.08);
+}
+
+.game-card h3 {
+    padding: 15px 20px 0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    color: #f0f0f0; 
+    transition: color 0.3s ease;
+    flex-grow: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+body.light-mode .game-card h3 {
+    color: #333333; 
+}
+
+.game-card p {
+    padding: 0 20px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    color: #00ccff;
+    flex-grow: 0;
+}
+
+.game-card .discount {
+    color: #ff4081;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.star-rating {
+    padding: 0 20px 10px;
+    font-size: 20px;
+    flex-grow: 0;
+}
+
+.star-rating span {
+    color: #ffd700; 
+}
+
+.star-rating span.empty {
+    color: #808080;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 0 20px 20px; 
+    gap: 10px; 
+    margin-top: auto;
+}
+
+.add-to-cart-btn {
+    font-family: 'Poppins', sans-serif;
+    color: #f0f0f0; 
+    background: #ff4081; 
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6); 
+    padding: 6px 15px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+}
+
+body.light-mode .add-to-cart-btn {
+    color: #333333; 
+    background: #00ccff; 
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6); 
+}
+
+.add-to-cart-btn:hover {
+    background: #00ccff; 
+    color: #ffffff; 
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6); 
+}
+
+body.light-mode .add-to-cart-btn:hover {
+    background: #ff4081; 
+    color: #333333; 
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8), 0 0 30px rgba(255, 64, 129, 0.6); 
+}
+
+.details-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px; 
+    color: #f0f0f0; 
+    text-decoration: none;
+    padding: 6px 15px; 
+    border-radius: 25px;
+    background: #ff4081; 
+    border: none;
+    cursor: pointer;
+    transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+    display: inline-block;
+    position: relative;
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6); 
+}
+
+body.light-mode .details-btn {
+    color: #333333; 
+    background: #00ccff; 
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6); 
+}
+
+.details-btn:hover {
+    background: #00ccff; 
+    color: #ffffff; 
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6); 
+}
+
+body.light-mode .details-btn:hover {
+    background: #ff4081; 
+    color: #333333; 
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8), 0 0 30px rgba(255, 64, 129, 0.6); 
+}
+
+/* Tombol Wishlist */
+.add-to-wishlist-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #f0f0f0;
+    background: #ff4081;
+    border: none;
+    border-radius: 25px;
+    padding: 4px 8px; /* Padding kecil untuk menandakan status, disesuaikan */
+    cursor: pointer;
+    transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.light-mode .add-to-wishlist-btn {
+    color: #333333;
+    background: #00ccff;
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+}
+
+.add-to-wishlist-btn:hover {
+    background: #00ccff;
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8);
+}
+
+body.light-mode .add-to-wishlist-btn:hover {
+    background: #ff4081;
+    color: #333333;
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8);
+}
+
+.add-to-wishlist-btn.active {
+    background: #00ccff;
+    color: #ffffff;
+}
+
+body.light-mode .add-to-wishlist-btn.active {
+    background: #ff4081;
+    color: #333333;
+}
+
+.game-card h3 .add-to-wishlist-btn {
+    margin-left: 10px; /* Jarak dari judul */
+}
+
+.see-all-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.see-all-btn {
+    font-family: 'Poppins', sans-serif;
+    padding: 12px 30px;
+    font-size: 18px;
+    background: #ff4081; 
+    color: #f0f0f0; 
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6); 
+}
+
+body.light-mode .see-all-btn {
+    color: #333333; 
+    background: #00ccff; 
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+}
+
+.see-all-btn:hover {
+    background: #00ccff; 
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6); 
+}
+
+body.light-mode .see-all-btn:hover {
+    background: #ff4081; 
+    color: #333333; 
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8), 0 0 30px rgba(255, 64, 129, 0.6); 
+}
+
+.full-games .games-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 35px;
+}
+
+@media (max-width: 768px) {
+    .products-page {
+        padding: 60px 40px 30px;
+    }
+    .filter-bar { 
+        flex-direction: column; 
+        gap: 10px; 
+    }
+    .carousel-btn { width: 30px; height: 30px; font-size: 16px; }
+    .games-container, .full-games { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+    .button-container {
+        flex-direction: column; 
+        gap: 10px; 
+    }
+    .details-btn {
+        font-size: 14px; 
+        padding: 4px 12px; 
+    }
+}

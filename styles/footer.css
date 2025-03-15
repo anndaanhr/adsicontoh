@@ -1,0 +1,26 @@
+/* styles/footer.css */
+.footer {
+    background: #0f0f0f;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+  body.light-mode .footer {
+    background: #ffffff;
+  }
+  
+  .footer p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #808080;
+    margin: 0;
+  }
+  
+  body.light-mode .footer p {
+    color: #666666;
+  }

@@ -1,0 +1,65 @@
+.btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    color: #f0f0f0 !important; 
+    text-decoration: none;
+    padding: 12px 30px;
+    border-radius: 25px; 
+    background: #ff4081; 
+    border: none;
+    cursor: pointer;
+    transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+    display: inline-block;
+    position: relative;
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6); 
+}
+
+body.light-mode .btn {
+    color: #333333 !important; 
+    background: #00ccff; 
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6); 
+}
+
+.btn:hover {
+    background: #00ccff; 
+    color: #ffffff; 
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6); 
+}
+
+body.light-mode .btn:hover {
+    background: #ff4081;
+    color: #333333; 
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8), 0 0 30px rgba(255, 64, 129, 0.6); 
+}
+
+.small-btn, .add-to-cart-btn {
+    font-size: 16px;
+    padding: 8px 20px;
+    border-radius: 25px; 
+}
+
+
+.add-to-cart-btn {
+    font-family: 'Poppins', sans-serif;
+    color: #f0f0f0; 
+    background: #ff4081;
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6); 
+}
+
+body.light-mode .add-to-cart-btn {
+    color: #333333; 
+    background: #00ccff; 
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6); 
+}
+
+.add-to-cart-btn:hover {
+    background: #00ccff; 
+    color: #ffffff; 
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6); 
+}
+
+body.light-mode .add-to-cart-btn:hover {
+    background: #ff4081; 
+    color: #333333; 
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8), 0 0 30px rgba(255, 64, 129, 0.6); 
+}

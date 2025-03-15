@@ -1,0 +1,221 @@
+.review-page {
+    padding: 100px 70px;
+    background: linear-gradient(180deg, #1a1a1a, #0f0f0f);
+}
+
+.review-page h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 50px;
+    text-align: center;
+    margin-bottom: 70px;
+    background: linear-gradient(60deg, #00ccff, #ff4081);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.review-page form {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #1f1f1f;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #eee;
+}
+
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: white;
+}
+
+.input-group textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.input-group select {
+    cursor: pointer;
+}
+
+.input-group .rating-stars {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.input-group .rating-star {
+    font-size: 28px;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s;
+}
+
+.input-group .rating-star.active,
+.input-group .rating-star:hover {
+    color: #ffd700;
+}
+
+.review-page button.btn {
+    background: linear-gradient(90deg, #ff4081, #00ccff);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: transform 0.3s;
+    display: block;
+    margin: 30px auto 0;
+}
+
+.review-page button.btn:hover {
+    transform: translateY(-5px);
+}
+
+/* My Reviews Section */
+.my-reviews-section {
+    max-width: 800px;
+    margin: 80px auto 0;
+}
+
+.my-reviews-section h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #ff4081;
+}
+
+.review-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.review-game {
+    font-weight: bold;
+    font-size: 18px;
+    color: #00ccff;
+    text-decoration: none;
+}
+
+.review-game:hover {
+    text-decoration: underline;
+}
+
+.review-date {
+    color: #888;
+    font-size: 14px;
+}
+
+.review-rating {
+    color: #ffd700;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.review-text {
+    color: #ddd;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.review-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.review-actions .btn {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.edit-review-btn {
+    background: rgba(0, 204, 255, 0.2);
+    border: 1px solid #00ccff;
+}
+
+.delete-review-btn {
+    background: rgba(255, 64, 129, 0.2);
+    border: 1px solid #ff4081;
+}
+
+/* Light Mode */
+body.light-mode .review-page {
+    background: linear-gradient(180deg, #f5f5f5, #e0e0e0);
+}
+
+body.light-mode .review-page form {
+    background: #ffffff;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .input-group label {
+    color: #333;
+}
+
+body.light-mode .input-group select,
+body.light-mode .input-group textarea {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+body.light-mode .my-reviews-section h3 {
+    color: #00ccff;
+}
+
+body.light-mode .review-item {
+    background: rgba(0, 0, 0, 0.03);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .review-text {
+    color: #333;
+}
+
+body.light-mode .review-game {
+    color: #ff4081;
+}
+
+@media (max-width: 768px) {
+    .review-page { 
+        padding: 60px 20px; 
+    }
+    .review-page h2 { 
+        font-size: 36px; 
+    }
+    .review-page form {
+        padding: 20px;
+    }
+    .input-group .rating-stars {
+        justify-content: center;
+    }
+}
