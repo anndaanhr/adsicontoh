@@ -9,24 +9,26 @@
     <link rel="stylesheet" href="styles/buttons.css">
     <link rel="stylesheet" href="styles/cart.css">
     <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/animation.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="page-transition">
     <nav class="navbar">
-        <div class="brand">ZafaGo</div>
+        <a href="index.html" class="brand">ZafaGo</a>
         <ul class="menu">
             <li><a href="index.html">Home</a></li>
             <li><a href="products.html">Store</a></li>
             <li><a href="promo.html">Deals</a></li>
             <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
             <li><a href="profile.html">Profile</a></li>
-            <li><div id="auth-link"></div></li> 
+            <li><div id="auth-link"></div></li>
+            <li><button id="mode-toggle" class="mode-toggle">☀️</button></li>
         </ul>
     </nav>
 
     <section class="cart-page">
-        <h2>Your Cart</h2>
-        
+        <h2 class="gradient-text">Your Cart</h2>
+
         <div class="cart-container">
             <div class="cart-items" id="cart-items">
                 <!-- Cart items will be loaded here -->
@@ -37,7 +39,7 @@
                     <a href="products.html" class="btn">Browse Games</a>
                 </div>
             </div>
-            
+
             <div class="cart-summary" id="cart-summary">
                 <h3>Order Summary</h3>
                 <div class="summary-row">
@@ -63,7 +65,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="recommendations" id="recommendations">
             <h3>You Might Also Like</h3>
             <div class="recommended-games" id="recommended-games">
@@ -73,75 +75,100 @@
     </section>
 
     <footer class="footer">
-        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ZafaGo</h3>
+                <p>Your trusted destination for game codes redeemable on Steam, Epic Games, and more.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Store</a></li>
+                    <li><a href="promo.html">Deals</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 ZafaGo. Crafted with Passion.</p>
+        </div>
     </footer>
+
+    <!-- Page Loader -->
+    <div id="page-loader" class="page-loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Load scripts in the correct order -->
+    <script src="scripts/games.js"></script>
+    <script src="scripts/navbar.js"></script>
+    <script src="scripts/cart.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Show loader initially
+            const pageLoader = document.getElementById('page-loader');
+            if (pageLoader) {
+                // Hide loader after content loads
+                window.addEventListener('load', () => {
+                    pageLoader.style.opacity = '0';
+                    setTimeout(() => {
+                        pageLoader.style.display = 'none';
+                    }, 500);
+                });
+            }
+
             const cartItemsDiv = document.getElementById('cart-items');
             const emptyCartDiv = document.getElementById('empty-cart');
             const subtotalPriceSpan = document.getElementById('subtotal-price');
             const discountAmountSpan = document.getElementById('discount-amount');
             const totalPriceSpan = document.getElementById('total-price');
-            const cartTotalSpan = document.getElementById('cart-total');
             const checkoutBtn = document.getElementById('checkout-btn');
             const cartSummary = document.getElementById('cart-summary');
             const recommendationsDiv = document.getElementById('recommendations');
             const recommendedGamesDiv = document.getElementById('recommended-games');
             const applyPromoBtn = document.getElementById('apply-promo');
             const promoCodeInput = document.getElementById('promo-code');
-            
+
             let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
             const user = JSON.parse(localStorage.getItem('user')) || {};
             let promoApplied = false;
-            
-            // Set auth link
-            const authLink = document.getElementById('auth-link');
-            if (authLink) {
-                if (user.email) {
-                    authLink.innerHTML = '<a href="profile.html">My Account</a>';
-                } else {
-                    authLink.innerHTML = '<a href="login.html">Login</a>';
-                }
-            }
 
             // Calculate cart totals
             function calculateTotals() {
                 let subtotal = 0;
                 let discount = 0;
-                
+
                 cartItems.forEach(item => {
                     const itemPrice = parseFloat(item.price);
                     const itemDiscount = item.discount > 0 ? (itemPrice * item.discount / 100) : 0;
-                    
+
                     subtotal += itemPrice;
                     discount += itemDiscount;
                 });
-                
+
                 // Apply promo code if valid
                 if (promoApplied) {
                     discount += subtotal * 0.10; // Example: 10% additional discount
                 }
-                
+
                 const total = subtotal - discount;
-                
+
                 subtotalPriceSpan.textContent = `$${subtotal.toFixed(2)}`;
                 discountAmountSpan.textContent = `-$${discount.toFixed(2)}`;
                 totalPriceSpan.textContent = `$${total.toFixed(2)}`;
-                
+
                 return { subtotal, discount, total };
             }
 
             // Refresh cart UI
             function refreshCart() {
-                // Update cart icon count
-                cartTotalSpan.textContent = cartItems.length;
-                
                 // Clear cart items
                 while (cartItemsDiv.firstChild && cartItemsDiv.firstChild !== emptyCartDiv) {
                     cartItemsDiv.removeChild(cartItemsDiv.firstChild);
                 }
-                
+
                 // Show/hide empty cart message
                 if (cartItems.length === 0) {
                     emptyCartDiv.style.display = 'flex';
@@ -152,16 +179,16 @@
                     emptyCartDiv.style.display = 'none';
                     cartSummary.style.display = 'block';
                 }
-                
+
                 // Add items to cart
                 cartItems.forEach((item, index) => {
-                    const finalPrice = item.discount > 0 
-                        ? (item.price * (1 - item.discount / 100)).toFixed(2) 
+                    const finalPrice = item.discount > 0
+                        ? (item.price * (1 - item.discount / 100)).toFixed(2)
                         : item.price.toFixed(2);
-                    
+
                     const cartItem = document.createElement('div');
                     cartItem.className = 'cart-item';
-                    
+
                     cartItem.innerHTML = `
                         <div class="item-image">
                             <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/80x80?text=${encodeURIComponent(item.title)}'">
@@ -169,7 +196,7 @@
                         <div class="item-details">
                             <h3>${item.title}</h3>
                             <div class="item-price">
-                                ${item.discount > 0 ? 
+                                ${item.discount > 0 ?
                                 `<span class="original-price">$${item.price.toFixed(2)}</span>
                                 <span class="discount-badge">-${item.discount}%</span>` : ''}
                                 <span class="final-price">$${finalPrice}</span>
@@ -179,13 +206,13 @@
                             <button class="remove-btn" data-index="${index}">Remove</button>
                         </div>
                     `;
-                    
+
                     cartItemsDiv.appendChild(cartItem);
                 });
-                
+
                 // Calculate totals
                 calculateTotals();
-                
+
                 // Update checkout button
                 if (cartItems.length === 0) {
                     checkoutBtn.textContent = 'Cart is Empty';
@@ -203,11 +230,11 @@
             cartItemsDiv.addEventListener('click', (e) => {
                 if (e.target.classList.contains('remove-btn')) {
                     const index = parseInt(e.target.dataset.index);
-                    
+
                     // Add animation
                     const item = e.target.closest('.cart-item');
                     item.classList.add('removing');
-                    
+
                     setTimeout(() => {
                         cartItems.splice(index, 1);
                         localStorage.setItem('cart', JSON.stringify(cartItems));
@@ -226,28 +253,28 @@
                     window.location.href = 'checkout.html';
                 }
             });
-            
+
             // Handle promo code
             applyPromoBtn.addEventListener('click', () => {
                 const promoCode = promoCodeInput.value.trim().toUpperCase();
-                
+
                 if (promoCode === 'WELCOME10') {
                     promoApplied = true;
                     applyPromoBtn.textContent = 'Applied';
                     applyPromoBtn.disabled = true;
                     promoCodeInput.disabled = true;
-                    
+
                     // Recalculate totals
                     calculateTotals();
-                    
+
                     // Show success message
                     const message = document.createElement('div');
                     message.className = 'promo-message success';
                     message.textContent = 'Promo code applied successfully!';
-                    
+
                     const promoSection = document.querySelector('.promo-code');
                     promoSection.appendChild(message);
-                    
+
                     setTimeout(() => {
                         message.remove();
                     }, 3000);
@@ -256,65 +283,65 @@
                     const message = document.createElement('div');
                     message.className = 'promo-message error';
                     message.textContent = 'Invalid promo code';
-                    
+
                     const promoSection = document.querySelector('.promo-code');
                     promoSection.appendChild(message);
-                    
+
                     setTimeout(() => {
                         message.remove();
                     }, 3000);
                 }
             });
-            
+
             // Load recommended games
             function loadRecommendedGames() {
                 if (!window.gameData) return;
-                
+
                 // Get 4 random games
                 const allGames = window.gameData;
                 const shuffled = [...allGames].sort(() => 0.5 - Math.random());
                 const selectedGames = shuffled.slice(0, 4);
-                
+
                 recommendedGamesDiv.innerHTML = '';
-                
+
                 selectedGames.forEach(game => {
-                    const finalPrice = game.discount > 0 
-                        ? (game.price * (1 - game.discount / 100)).toFixed(2) 
+                    const finalPrice = game.discount > 0
+                        ? (game.price * (1 - game.discount / 100)).toFixed(2)
                         : game.price.toFixed(2);
-                    
+
                     const gameElement = document.createElement('div');
                     gameElement.className = 'recommended-game';
-                    
+
                     gameElement.innerHTML = `
                         <img src="${game.image}" alt="${game.title}" onerror="this.src='https://via.placeholder.com/100x100?text=${encodeURIComponent(game.title)}'">
                         <h4>${game.title}</h4>
                         <div class="game-price">
-                            ${game.discount > 0 ? 
+                            ${game.discount > 0 ?
                             `<span class="original-price">$${game.price.toFixed(2)}</span>
                             <span class="discount-badge">-${game.discount}%</span>` : ''}
                             <span class="final-price">$${finalPrice}</span>
                         </div>
                         <button class="add-to-cart-btn" data-id="${game.id}">Add to Cart</button>
                     `;
-                    
+
                     recommendedGamesDiv.appendChild(gameElement);
                 });
             }
-            
+
             // Handle adding recommended games to cart
             recommendedGamesDiv.addEventListener('click', (e) => {
                 if (e.target.classList.contains('add-to-cart-btn')) {
                     const gameId = parseInt(e.target.dataset.id);
                     const game = window.gameData.find(g => g.id === gameId);
-                    
+
                     if (game) {
                         cartItems.push(game);
                         localStorage.setItem('cart', JSON.stringify(cartItems));
-                        
+
                         // Update button temporarily
                         e.target.textContent = 'Added!';
                         e.target.disabled = true;
-                        
+
                         setTimeout(() => {
                             e.target.textContent = 'Add to Cart';
                             e.target.disabled = false;
@@ -329,30 +356,10 @@
             if (urlParams.get('checkout') === 'true' && user.email && cartItems.length > 0) {
                 window.location.href = 'checkout.html';
             }
-            
-            // Set theme
-            const currentMode = localStorage.getItem('theme') || 'dark';
-            document.body.classList.toggle('light-mode', currentMode === 'light');
-            
-            // Load games data if not already loaded
-            if (!window.gameData) {
-                const script = document.createElement('script');
-                script.src = 'scripts/games.js';
-                script.onload = () => {
-                    loadRecommendedGames();
-                    refreshCart();
-                };
-                document.body.appendChild(script);
-            } else {
-                loadRecommendedGames();
-                refreshCart();
-            }
-            
-            // Handle theme changes
-            document.addEventListener('themeChange', () => {
-                const newMode = localStorage.getItem('theme') || 'dark';
-                document.body.classList.toggle('light-mode', newMode === 'light');
-            });
+
+            // Load games data and refresh cart
+            loadRecommendedGames();
+            refreshCart();
         });
     </script>
 </body>

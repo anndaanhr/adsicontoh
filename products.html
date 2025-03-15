@@ -10,11 +10,12 @@
     <link rel="stylesheet" href="styles/buttons.css">
     <link rel="stylesheet" href="styles/store.css">
     <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/animation.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="page-transition">
     <nav class="navbar">
-        <div class="brand">ZafaGo</div>
+        <a href="index.html" class="brand">ZafaGo</a>
         <ul class="menu">
             <li><a href="index.html">Home</a></li>
             <li><a href="products.html">Store</a></li>
@@ -22,11 +23,12 @@
             <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
             <li><a href="profile.html">Profile</a></li>
             <li><div id="auth-link"></div></li>
+            <li><button id="mode-toggle" class="mode-toggle">☀️</button></li>
         </ul>
     </nav>
 
     <section class="products-page">
-        <h2>Our Store</h2>
+        <h2 class="gradient-text">Our Store</h2>
         <div class="filter-bar">
             <input type="text" id="search-input" placeholder="Search games...">
             <select id="category-filter">
@@ -66,22 +68,64 @@
     </section>
 
     <footer class="footer">
-        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ZafaGo</h3>
+                <p>Your trusted destination for game codes redeemable on Steam, Epic Games, and more.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Store</a></li>
+                    <li><a href="promo.html">Deals</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 ZafaGo. Crafted with Passion.</p>
+        </div>
     </footer>
     
+    <!-- Page Loader -->
+    <div id="page-loader" class="page-loader">
+        <div class="loader"></div>
+    </div>
+    
     <script src="scripts/games.js"></script>
-    <script src="scripts/products.js"></script>
     <script src="scripts/navbar.js"></script>
+    <script src="scripts/cart.js"></script>
+    <script src="scripts/products.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const currentMode = localStorage.getItem('theme') || 'dark';
-            document.body.classList.toggle('light-mode', currentMode === 'light');
-
-            document.addEventListener('themeChange', () => {
-                const newMode = localStorage.getItem('theme') || 'dark';
-                document.body.classList.toggle('light-mode', newMode === 'light');
-                console.log('Mode Updated:', newMode, 'Body Class:', document.body.className);
-            });
+            // Show loader initially
+            const pageLoader = document.getElementById('page-loader');
+            if (pageLoader) {
+                // Hide loader after content loads
+                window.addEventListener('load', () => {
+                    pageLoader.style.opacity = '0';
+                    setTimeout(() => {
+                        pageLoader.style.display = 'none';
+                    }, 500);
+                });
+            }
+            
+            // Handle URL parameters for category filtering
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+            
+            if (categoryParam) {
+                const categorySelector = document.getElementById('category-filter');
+                if (categorySelector && categorySelector.querySelector(`option[value="${categoryParam}"]`)) {
+                    categorySelector.value = categoryParam;
+                    
+                    // Trigger change event to apply filter
+                    const event = new Event('change');
+                    categorySelector.dispatchEvent(event);
+                }
+            }
         });
     </script>
 </body>

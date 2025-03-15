@@ -9,35 +9,37 @@
     <link rel="stylesheet" href="styles/buttons.css">
     <link rel="stylesheet" href="styles/auth.css">
     <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/animation.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="page-transition">
     <nav class="navbar">
-        <div class="brand">ZafaGo</div>
+        <a href="index.html" class="brand">ZafaGo</a>
         <ul class="menu">
             <li><a href="index.html">Home</a></li>
             <li><a href="products.html">Store</a></li>
             <li><a href="promo.html">Deals</a></li>
             <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
             <li><a href="profile.html">Profile</a></li>
-            <li><div id="auth-link"></div></li> 
+            <li><div id="auth-link"></div></li>
+            <li><button id="mode-toggle" class="mode-toggle">☀️</button></li> 
         </ul>
     </nav>
 
-    <section class="auth-container">
-        <div class="auth-box">
-            <h2>Welcome Back</h2>
+    <section class="auth-container fade-in">
+        <div class="auth-box scale-in">
+            <h2 class="gradient-text">Welcome Back</h2>
             <form id="login-form">
                 <div class="input-group">
-                    <input type="email" id="login-email" placeholder="Email Address" required>
+                    <input type="email" id="email" placeholder="Email Address" required>
                     <span class="input-validation" id="email-validation"></span>
                 </div>
                 <div class="input-group password-group">
-                    <input type="password" id="login-password" placeholder="Password" required>
+                    <input type="password" id="password" placeholder="Password" required>
                     <span class="toggle-password" id="toggle-password">👁️</span>
                     <span class="input-validation" id="password-validation"></span>
                 </div>
-                <button type="submit" class="btn">Login</button>
+                <button type="submit" class="btn btn-glow">Login</button>
                 <div class="loading-spinner" id="loading-spinner">
                     <div class="spinner"></div>
                     <span>Logging in...</span>
@@ -51,25 +53,39 @@
     </section>
 
     <footer class="footer">
-        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ZafaGo</h3>
+                <p>Your trusted destination for game codes redeemable on Steam, Epic Games, and more.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Store</a></li>
+                    <li><a href="promo.html">Deals</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 ZafaGo. Crafted with Passion.</p>
+        </div>
     </footer>
 
+    <script src="scripts/navbar.js"></script>
+    <script src="scripts/cart.js"></script>
+    
     <script>
         // Form elements
         const loginForm = document.getElementById('login-form');
-        const emailInput = document.getElementById('login-email');
-        const passwordInput = document.getElementById('login-password');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
         const emailValidation = document.getElementById('email-validation');
         const passwordValidation = document.getElementById('password-validation');
         const togglePassword = document.getElementById('toggle-password');
         const messageEl = document.getElementById('message');
         const loadingSpinner = document.getElementById('loading-spinner');
-
-        // Valid email domains
-        const validDomains = [
-            'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'aol.com', 
-            'icloud.com', 'protonmail.com', 'mail.com', 'zoho.com', 'yandex.com'
-        ];
 
         // Toggle password visibility
         togglePassword.addEventListener('click', () => {
@@ -93,138 +109,34 @@
                 return;
             }
             
-            const domain = email.split('@')[1].toLowerCase();
-            if (!validDomains.includes(domain)) {
-                emailValidation.textContent = 'Please use a common email provider';
-                emailValidation.className = 'input-validation error';
-            } else {
-                emailValidation.textContent = '✓';
-                emailValidation.className = 'input-validation success';
-            }
+            emailValidation.textContent = '✓';
+            emailValidation.className = 'input-validation success';
         });
 
         // Password validation
         passwordInput.addEventListener('input', () => {
             const password = passwordInput.value;
             
-            if (password.length < 8) {
-                passwordValidation.textContent = 'Password must be at least 8 characters';
+            if (password.length < 6) {
+                passwordValidation.textContent = 'Password must be at least 6 characters';
                 passwordValidation.className = 'input-validation error';
             } else {
-                passwordValidation.textContent = '';
-                passwordValidation.className = 'input-validation';
+                passwordValidation.textContent = '✓';
+                passwordValidation.className = 'input-validation success';
             }
         });
 
-        // Form submission
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                // Get form values
-                const email = emailInput.value.trim();
-                const password = passwordInput.value;
-                
-                // Reset message
-                messageEl.textContent = '';
-                messageEl.className = 'message';
-                
-                // Email validation
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    messageEl.textContent = "Invalid email format";
-                    messageEl.classList.add('error');
-                    return;
-                }
-                
-                // Show loading spinner
-                loadingSpinner.style.display = 'flex';
-                
-                // Get users from localStorage
-                const users = JSON.parse(localStorage.getItem('users')) || {};
-                
-                // Simulate network delay (remove in production)
-                setTimeout(() => {
-                    // Check if user exists
-                    if (!users[email]) {
-                        loadingSpinner.style.display = 'none';
-                        messageEl.textContent = "Email not found. Please register first.";
-                        messageEl.classList.add('error');
-                        return;
-                    }
-                    
-                    // Check if account is verified
-                    if (!users[email].verified) {
-                        loadingSpinner.style.display = 'none';
-                        messageEl.innerHTML = "Your account is not verified. Please check your email or <a href='register.html'>register again</a>.";
-                        messageEl.classList.add('error');
-                        return;
-                    }
-                    
-                    // Check password
-                    if (users[email].password !== password) {
-                        loadingSpinner.style.display = 'none';
-                        messageEl.textContent = "Incorrect password. Please try again.";
-                        messageEl.classList.add('error');
-                        return;
-                    }
-                    
-                    // Success - store user info in localStorage
-                    localStorage.setItem('user', JSON.stringify({ 
-                        name: users[email].name || email.split('@')[0],
-                        email: email 
-                    }));
-                    
-                    // Show success message and redirect
-                    loadingSpinner.style.display = 'none';
-                    messageEl.textContent = "Login successful! Redirecting to profile...";
-                    messageEl.classList.add('success');
-                    
-                    // Redirect to profile page after 1 second
-                    setTimeout(() => {
-                        window.location.href = 'profile.html';
-                    }, 1000);
-                    
-                }, 1000); // Simulated delay
-            });
-        }
-
-        // Update page on load
+        // Check if user is already logged in
         document.addEventListener('DOMContentLoaded', () => {
-            // Update cart count
-            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            document.getElementById('cart-total').textContent = cartItems.length;
-            
-            // Set theme
-            const currentMode = localStorage.getItem('theme') || 'dark';
-            document.body.classList.toggle('light-mode', currentMode === 'light');
-            
-            // Set auth link
             const user = JSON.parse(localStorage.getItem('user')) || {};
-            const authLink = document.getElementById('auth-link');
             
-            if (authLink) {
-                if (user.email) {
-                    authLink.innerHTML = '<a href="profile.html">My Account</a>';
-                } else {
-                    authLink.innerHTML = '<a href="login.html">Login</a>';
-                }
-            }
-            
-            // Theme change handling
-            document.addEventListener('themeChange', () => {
-                const newMode = localStorage.getItem('theme') || 'dark';
-                document.body.classList.toggle('light-mode', newMode === 'light');
-            });
-            
-            // Check if user is already logged in
             if (user.email) {
-                messageEl.innerHTML = "You are already logged in. <a href='profile.html'>Go to your profile</a> or <a href='#' id='logout-link'>logout</a>.";
+                messageEl.innerHTML = "You are already logged in. <a href='profile.html'>Go to your profile</a> or <a href='#' id='local-logout-link'>logout</a>.";
                 messageEl.classList.add('info');
                 loginForm.style.display = 'none';
                 
-                // Add logout functionality
-                document.getElementById('logout-link').addEventListener('click', (e) => {
+                // Add logout functionality for this page
+                document.getElementById('local-logout-link').addEventListener('click', (e) => {
                     e.preventDefault();
                     localStorage.removeItem('user');
                     window.location.reload();

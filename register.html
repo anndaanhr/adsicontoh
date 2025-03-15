@@ -9,12 +9,12 @@
   <link rel="stylesheet" href="styles/buttons.css">
   <link rel="stylesheet" href="styles/register.css">
   <link rel="stylesheet" href="styles/footer.css">
+  <link rel="stylesheet" href="styles/animation.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
 </head>
-<body>
+<body class="page-transition">
   <nav class="navbar">
-    <div class="brand">ZafaGo</div>
+    <a href="index.html" class="brand">ZafaGo</a>
     <ul class="menu">
       <li><a href="index.html">Home</a></li>
       <li><a href="products.html">Store</a></li>
@@ -22,11 +22,12 @@
       <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
       <li><a href="profile.html">Profile</a></li>
       <li><div id="auth-link"></div></li>
+      <li><button id="mode-toggle" class="mode-toggle">☀️</button></li>
     </ul>
   </nav>
 
-  <section class="register-container">
-    <h2>Create Account</h2>
+  <section class="register-container fade-in">
+    <h2 class="gradient-text">Create Account</h2>
     <form id="register-form">
       <div class="input-group">
         <input type="text" id="name" placeholder="Full Name" required>
@@ -47,7 +48,7 @@
         </div>
         <span class="input-validation" id="password-validation"></span>
       </div>
-      <button type="submit" class="btn register-btn">Register</button>
+      <button type="submit" class="btn register-btn btn-glow">Register</button>
       <div class="loading-spinner" id="loading-spinner">
         <div class="spinner"></div>
         <span>Processing...</span>
@@ -59,23 +60,30 @@
   </section>
 
   <footer class="footer">
-    <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>ZafaGo</h3>
+        <p>Your trusted destination for game codes redeemable on Steam, Epic Games, and more.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">Store</a></li>
+          <li><a href="promo.html">Deals</a></li>
+          <li><a href="cart.html">Cart</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </div>
   </footer>
 
+  <script src="scripts/navbar.js"></script>
+  <script src="scripts/cart.js"></script>
+  
   <script>
-    // Initialize EmailJS with Public Key
-    if (typeof emailjs === 'undefined') {
-      console.error('EmailJS library not loaded. Check network connection or CDN URL:', 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js');
-      document.getElementById('message').textContent = "Failed to load EmailJS library. Please check your internet connection.";
-      document.getElementById('message').classList.add('error');
-    } else {
-      emailjs.init("cn7JoAelyYvtF96wf"); 
-      console.log('EmailJS initialized successfully');
-    }
-
-    let lastSentTime = 0;
-    const cooldownTime = 60000; // 60 seconds cooldown
-
     // Form elements
     const registerForm = document.getElementById('register-form');
     const nameInput = document.getElementById('name');
@@ -89,12 +97,6 @@
     const togglePassword = document.getElementById('toggle-password');
     const messageEl = document.getElementById('message');
     const loadingSpinner = document.getElementById('loading-spinner');
-
-    // Email validation domains
-    const validDomains = [
-      'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'aol.com', 
-      'icloud.com', 'protonmail.com', 'mail.com', 'zoho.com', 'yandex.com'
-    ];
 
     // Toggle password visibility
     togglePassword.addEventListener('click', () => {
@@ -113,14 +115,13 @@
       
       if (name.length < 3) {
         nameValidation.textContent = 'Name must be at least 3 characters';
-        nameValidation.classList.add('error');
+        nameValidation.className = 'input-validation error';
       } else if (!/^[a-zA-Z\s]+$/.test(name)) {
         nameValidation.textContent = 'Name should contain only letters';
-        nameValidation.classList.add('error');
+        nameValidation.className = 'input-validation error';
       } else {
         nameValidation.textContent = '✓';
-        nameValidation.classList.remove('error');
-        nameValidation.classList.add('success');
+        nameValidation.className = 'input-validation success';
       }
     });
 
@@ -131,18 +132,10 @@
       
       if (!emailRegex.test(email)) {
         emailValidation.textContent = 'Please enter a valid email address';
-        emailValidation.classList.add('error');
-        return;
-      }
-      
-      const domain = email.split('@')[1].toLowerCase();
-      if (!validDomains.includes(domain)) {
-        emailValidation.textContent = 'Please use a common email provider';
-        emailValidation.classList.add('error');
+        emailValidation.className = 'input-validation error';
       } else {
         emailValidation.textContent = '✓';
-        emailValidation.classList.remove('error');
-        emailValidation.classList.add('success');
+        emailValidation.className = 'input-validation success';
       }
     });
 
@@ -153,7 +146,7 @@
       let feedback = '';
       
       // Length check
-      if (password.length >= 8) {
+      if (password.length >= 6) {
         strength += 25;
       }
       
@@ -182,189 +175,34 @@
       strengthText.textContent = feedback;
       
       // Show validation message
-      if (password.length < 8) {
-        passwordValidation.textContent = 'Password must be at least 8 characters';
-        passwordValidation.classList.add('error');
+      if (password.length < 6) {
+        passwordValidation.textContent = 'Password must be at least 6 characters';
+        passwordValidation.className = 'input-validation error';
       } else if (strength < 50) {
         passwordValidation.textContent = 'Try adding numbers and special characters';
-        passwordValidation.classList.add('error');
+        passwordValidation.className = 'input-validation error';
       } else {
         passwordValidation.textContent = '✓';
-        passwordValidation.classList.remove('error');
-        passwordValidation.classList.add('success');
+        passwordValidation.className = 'input-validation success';
       }
     });
 
-    // Form submission
-    registerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      // Get form values
-      const name = nameInput.value.trim();
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-      const currentTime = Date.now();
-      
-      // Reset message area
-      messageEl.textContent = '';
-      messageEl.className = 'message';
-      
-      // Check cooldown
-      if (currentTime - lastSentTime < cooldownTime) {
-        const timeLeft = Math.ceil((cooldownTime - (currentTime - lastSentTime)) / 1000);
-        messageEl.textContent = `Please wait ${timeLeft} seconds before trying again`;
-        messageEl.classList.add('error');
-        return;
-      }
-      
-      // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        messageEl.textContent = "Invalid email format";
-        messageEl.classList.add('error');
-        return;
-      }
-      
-      const domain = email.split('@')[1].toLowerCase();
-      if (!validDomains.includes(domain)) {
-        messageEl.textContent = "Please use a common email provider (e.g., gmail.com, yahoo.com)";
-        messageEl.classList.add('error');
-        return;
-      }
-      
-      // Password validation - minimum 8 chars
-      if (password.length < 8) {
-        messageEl.textContent = "Password must be at least 8 characters";
-        messageEl.classList.add('error');
-        return;
-      }
-      
-      // Name validation
-      if (name.length < 2) {
-        messageEl.textContent = "Please enter your full name";
-        messageEl.classList.add('error');
-        return;
-      }
-      
-      // Show loading state
-      loadingSpinner.style.display = 'flex';
-      
-      // Generate verification token
-      const verificationToken = Math.random().toString(36).substr(2, 9);
-      
-      // Save or update user data in localStorage
-      let users = JSON.parse(localStorage.getItem('users')) || {};
-      
-      // Check if email already exists
-      if (users[email] && users[email].verified) {
-        loadingSpinner.style.display = 'none';
-        messageEl.textContent = "This email is already registered. Please login instead.";
-        messageEl.classList.add('error');
-        return;
-      }
-      
-      users[email] = { 
-        name: name,
-        password: password, 
-        verified: false, 
-        token: verificationToken,
-        registeredAt: new Date().toISOString()
-      };
-      
-      localStorage.setItem('users', JSON.stringify(users));
-      console.log('User data saved to localStorage:', users[email]);
-      
-      // Send verification email using EmailJS
-      try {
-        if (typeof emailjs === 'undefined') {
-          throw new Error('EmailJS library not available.');
-        }
-        
-        const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost' : 'https://zafago.netlify.app';
-        const verifyLink = `${baseUrl}/register.html?verify=${verificationToken}&email=${encodeURIComponent(email)}`;
-        
-        console.log('Sending verification email to:', email);
-        console.log('Verification link:', verifyLink);
-        
-        const response = await emailjs.send('service_5ybtnfo', 'template_5rdci7q', {
-          to_name: name,
-          to_email: email,
-          verifyLink: verifyLink
-        });
-        
-        console.log('Email sent successfully:', response);
-        loadingSpinner.style.display = 'none';
-        
-        messageEl.textContent = "Verification email has been sent! Please check your inbox and spam folder.";
-        messageEl.classList.add('success');
-        
-        // Set cooldown timer
-        lastSentTime = currentTime;
-        
-        // Clear form
-        registerForm.reset();
-        
-      } catch (error) {
-        console.error('Error details:', error);
-        loadingSpinner.style.display = 'none';
-        
-        messageEl.textContent = "Failed to send verification email. Please try again later.";
-        messageEl.classList.add('error');
-      }
-    });
-
-    // Handle verification from URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('verify');
-    const email = urlParams.get('email') ? decodeURIComponent(urlParams.get('email')) : null;
-
-    if (token && email) {
-      const users = JSON.parse(localStorage.getItem('users')) || {};
-      console.log('Verification attempt:', { email, token, userExists: !!users[email] });
-      
-      if (users[email] && users[email].token === token) {
-        if (!users[email].verified) {
-          users[email].verified = true;
-          users[email].verifiedAt = new Date().toISOString();
-          localStorage.setItem('users', JSON.stringify(users));
-          
-          messageEl.innerHTML = "Email verified successfully! You can now <a href='login.html'>login</a> to your account.";
-          messageEl.classList.add('success');
-        } else {
-          messageEl.innerHTML = "This email has already been verified. Please <a href='login.html'>login</a> to your account.";
-          messageEl.classList.add('info');
-        }
-      } else {
-        messageEl.textContent = "Invalid verification link. Please try registering again.";
-        messageEl.classList.add('error');
-      }
-    }
-
-    // Update cart count on page load
+    // Check if user is already logged in
     document.addEventListener('DOMContentLoaded', () => {
-      const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-      document.getElementById('cart-total').textContent = cartItems.length;
-      
-      // Set theme
-      const currentMode = localStorage.getItem('theme') || 'dark';
-      document.body.classList.toggle('light-mode', currentMode === 'light');
-      
-      // Set auth link
       const user = JSON.parse(localStorage.getItem('user')) || {};
-      const authLink = document.getElementById('auth-link');
       
-      if (authLink) {
-        if (user.email) {
-          authLink.innerHTML = '<a href="profile.html">My Account</a>';
-        } else {
-          authLink.innerHTML = '<a href="login.html">Login</a>';
-        }
+      if (user.email) {
+        messageEl.innerHTML = "You are already registered and logged in. <a href='profile.html'>Go to your profile</a> or <a href='#' id='local-logout-link'>logout</a>.";
+        messageEl.classList.add('info');
+        registerForm.style.display = 'none';
+        
+        // Add logout functionality for this page
+        document.getElementById('local-logout-link').addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('user');
+          window.location.reload();
+        });
       }
-
-      document.addEventListener('themeChange', () => {
-        const newMode = localStorage.getItem('theme') || 'dark';
-        document.body.classList.toggle('light-mode', newMode === 'light');
-      });
     });
   </script>
 </body>

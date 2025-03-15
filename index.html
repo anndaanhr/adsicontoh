@@ -4,16 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZafaGo - Ultimate Gaming</title>
+    <meta name="description" content="ZafaGo - Get the best game codes for Steam and Epic Games at amazing prices. Redeem instantly and start playing!">
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="styles/buttons.css">
     <link rel="stylesheet" href="styles/home.css">
     <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/animation.css">
+    <link rel="stylesheet" href="styles/search.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="page-transition">
     <nav class="navbar">
-        <div class="brand">ZafaGo</div>
+        <a href="index.html" class="brand">ZafaGo</a>
         <ul class="menu">
             <li><a href="index.html">Home</a></li>
             <li><a href="products.html">Store</a></li>
@@ -21,7 +24,7 @@
             <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
             <li><a href="profile.html">Profile</a></li>
             <li><div id="auth-link"></div></li>
-            <li><button id="mode-toggle" class="mode-toggle">☀️</button></li> 
+            <li><button id="mode-toggle" class="mode-toggle">☀️</button></li>
         </ul>
     </nav>
 
@@ -33,47 +36,139 @@
             </video>
         </div>
         <canvas id="sakura-canvas" class="sakura-effect"></canvas>
-        <div class="hero-text">
-            <h1>Step Into ZafaGo</h1>
+        <div class="hero-text fade-in-up">
+            <h1 class="gradient-text">Step Into ZafaGo</h1>
             <p>Unleash your gaming spirit with epic titles.</p>
-            <a href="products.html" class="hero-btn">Explore Now</a>
+            <a href="products.html" class="hero-btn btn-glow">Explore Now</a>
         </div>
     </section>
 
     <section class="featured-games">
-        <h2>Hot Games</h2>
+        <h2 class="gradient-text">Hot Games</h2>
         <div class="games-container" id="games-list"></div>
     </section>
-    
+
     <!-- New recommendations section -->
     <section class="featured-games recommendations-section">
-        <h2>Recommended For You</h2>
+        <h2 class="gradient-text">Recommended For You</h2>
         <div class="recommendations-container" id="recommendations-list"></div>
     </section>
 
+    <!-- Recently Viewed Section -->
+    <section class="featured-games recently-viewed-section">
+        <h2 class="gradient-text">Recently Viewed</h2>
+        <div class="recommendations-container" id="recently-viewed-list"></div>
+    </section>
+
+    <!-- New categories section -->
+    <section class="categories-section">
+        <h2 class="gradient-text">Browse Categories</h2>
+        <div class="categories-container">
+            <a href="products.html?category=action" class="category-card hover-lift">
+                <div class="category-icon">🎮</div>
+                <h3>Action</h3>
+            </a>
+            <a href="products.html?category=adventure" class="category-card hover-lift">
+                <div class="category-icon">🌄</div>
+                <h3>Adventure</h3>
+            </a>
+            <a href="products.html?category=rpg" class="category-card hover-lift">
+                <div class="category-icon">⚔️</div>
+                <h3>RPG</h3>
+            </a>
+            <a href="products.html?category=strategy" class="category-card hover-lift">
+                <div class="category-icon">🧠</div>
+                <h3>Strategy</h3>
+            </a>
+            <a href="products.html?category=sports" class="category-card hover-lift">
+                <div class="category-icon">⚽</div>
+                <h3>Sports</h3>
+            </a>
+            <a href="products.html?category=simulation" class="category-card hover-lift">
+                <div class="category-icon">🏙️</div>
+                <h3>Simulation</h3>
+            </a>
+        </div>
+    </section>
+
     <footer class="footer">
-        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ZafaGo</h3>
+                <p>Your trusted destination for game codes redeemable on Steam, Epic Games, and more.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Store</a></li>
+                    <li><a href="promo.html">Deals</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Stay Connected</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-icon">🔵</a>
+                    <a href="#" class="social-icon">🔴</a>
+                    <a href="#" class="social-icon">⚫</a>
+                    <a href="#" class="social-icon">🟣</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 ZafaGo. Crafted with Passion.</p>
+        </div>
     </footer>
 
+    <!-- Loader for transitions -->
+    <div id="page-loader" class="page-loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Load scripts in the correct order for dependencies -->
     <script src="scripts/games.js"></script>
     <script src="scripts/features.js"></script>
-    <script src="scripts/main.js"></script>
+    <!-- Load navbar.js before other scripts that might depend on auth status -->
     <script src="scripts/navbar.js"></script>
+    <script src="scripts/main.js"></script>
     <script src="scripts/cart.js"></script>
-    
+    <script src="scripts/search.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Show loader initially
+            const pageLoader = document.getElementById('page-loader');
+            if (pageLoader) {
+                // Hide loader after content loads
+                window.addEventListener('load', () => {
+                    pageLoader.style.opacity = '0';
+                    setTimeout(() => {
+                        pageLoader.style.display = 'none';
+                    }, 500);
+                });
+            }
+
             const videoSource = document.getElementById('video-source');
             const video = document.querySelector('.layer-sky');
             const currentMode = localStorage.getItem('theme') || 'dark';
             document.body.classList.toggle('light-mode', currentMode === 'light');
             updateVideo(currentMode);
-            
+
             // Display recommendations
             const recommendationsList = document.getElementById('recommendations-list');
             const user = JSON.parse(localStorage.getItem('user')) || {};
             const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
-            
+
             // If user has no purchases yet, hide the section
             if (purchases.length === 0 && !user.email) {
                 const recommendationsSection = document.querySelector('.recommendations-section');
@@ -85,29 +180,78 @@
                 setTimeout(() => {
                     if (window.zafagoFeatures && recommendationsList) {
                         const recommendations = window.zafagoFeatures.getRecommendations(null, 5);
-                        
-                        recommendations.forEach(game => {
+
+                        recommendations.forEach((game, index) => {
                             const finalPrice = game.discount > 0 ? (game.price * (1 - game.discount / 100)).toFixed(2) : game.price;
-                            
+
                             const card = document.createElement('div');
-                            card.className = 'recommendation-card';
+                            card.className = 'recommendation-card hover-lift fade-in';
+                            card.style.animationDelay = `${0.1 * index}s`;
                             card.innerHTML = `
-                                <img src="${game.image}" alt="${game.title}">
+                                <div class="img-zoom-container">
+                                    <img src="${game.image}" alt="${game.title}" class="img-zoom">
+                                </div>
                                 <div class="recommendation-card-info">
                                     <h4>${game.title}</h4>
                                     <div class="rating">${'★'.repeat(game.rating)}${'☆'.repeat(5 - game.rating)}</div>
                                     <div class="price">$${finalPrice}</div>
                                 </div>
                             `;
-                            
+
                             card.addEventListener('click', () => {
                                 window.location.href = `product-detail.html?id=${game.id}`;
                             });
-                            
+
                             recommendationsList.appendChild(card);
                         });
                     }
                 }, 100); // Small delay to ensure features.js has loaded
+            }
+
+            // Display recently viewed
+            const recentlyViewedList = document.getElementById('recently-viewed-list');
+            const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+
+            // If user has no recently viewed items, hide the section
+            if (recentlyViewed.length === 0) {
+                const recentlyViewedSection = document.querySelector('.recently-viewed-section');
+                if (recentlyViewedSection) {
+                    recentlyViewedSection.style.display = 'none';
+                }
+            } else {
+                setTimeout(() => {
+                    if (recentlyViewedList) {
+                        // Get the recently viewed games data
+                        const recentGames = recentlyViewed.map(id =>
+                            gameData.find(game => game.id === id)
+                        ).filter(game => game !== undefined);
+
+                        // Display them
+                        recentGames.forEach((game, index) => {
+                            const finalPrice = game.discount > 0 ? (game.price * (1 - game.discount / 100)).toFixed(2) : game.price;
+
+                            const card = document.createElement('div');
+                            card.className = 'recommendation-card hover-lift fade-in';
+                            card.style.animationDelay = `${0.1 * index}s`;
+                            card.innerHTML = `
+                                <div class="img-zoom-container">
+                                    <img src="${game.image}" alt="${game.title}" class="img-zoom">
+                                </div>
+                                <div class="recommendation-card-info">
+                                    <h4>${game.title}</h4>
+                                    <div class="rating">${'★'.repeat(game.rating)}${'☆'.repeat(5 - game.rating)}</div>
+                                    <div class="price">$${finalPrice}</div>
+                                </div>
+                            `;
+
+                            card.addEventListener('click', () => {
+                                window.location.href = `product-detail.html?id=${game.id}`;
+                            });
+
+                            recentlyViewedList.appendChild(card);
+                        });
+                    }
+                }, 150);
             }
 
             function updateVideo(mode) {

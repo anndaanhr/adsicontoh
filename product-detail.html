@@ -10,6 +10,227 @@
     <link rel="stylesheet" href="styles/store.css">
     <link rel="stylesheet" href="styles/footer.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Enhanced product detail styling */
+        .product-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 20px;
+        }
+        
+        .product-image-gallery {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            aspect-ratio: 16/9;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .product-image-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .product-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin: 0;
+            background: linear-gradient(60deg, #00ccff, #ff4081);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff4081;
+        }
+        
+        body.light-mode .product-price {
+            color: #00ccff;
+        }
+        
+        .product-discount {
+            font-size: 1.2rem;
+            color: #00ccff;
+            background: rgba(0,0,0,0.1);
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        body.light-mode .product-discount {
+            color: #ff4081;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .product-rating {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin: 10px 0;
+        }
+        
+        .product-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 15px 0;
+            color: #f0f0f0;
+        }
+        
+        body.light-mode .product-description {
+            color: #333;
+        }
+        
+        .product-specs {
+            margin-top: 20px;
+            background: rgba(31, 31, 31, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        body.light-mode .product-specs {
+            background: rgba(240, 240, 240, 0.5);
+        }
+        
+        .product-specs h4 {
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 10px;
+            color: #00ccff;
+        }
+        
+        body.light-mode .product-specs h4 {
+            color: #ff4081;
+        }
+        
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .spec-label {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .spec-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #f0f0f0;
+        }
+        
+        body.light-mode .spec-value {
+            color: #333;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .add-to-cart-btn, .add-to-wishlist-btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .add-to-wishlist-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .share-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .share-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        
+        .share-button:hover {
+            transform: translateY(-5px);
+            background: #ff4081;
+        }
+        
+        body.light-mode .share-button:hover {
+            background: #00ccff;
+        }
+        
+        /* Responsive design for mobile */
+        @media (max-width: 768px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-title {
+                font-size: 1.5rem;
+            }
+            
+            .product-price {
+                font-size: 1.5rem;
+            }
+            
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        /* Animation styles */
+        .animate-in {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .delayed-1 { animation-delay: 0.1s; }
+        .delayed-2 { animation-delay: 0.2s; }
+        .delayed-3 { animation-delay: 0.3s; }
+        .delayed-4 { animation-delay: 0.4s; }
+        .delayed-5 { animation-delay: 0.5s; }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -26,16 +247,70 @@
     </nav>
 
     <section class="products-page">
-        <h2 id="product-title"></h2>
-        <div class="game-card" style="max-width: 800px; margin: 0 auto;">
-            <img id="product-img" alt="Product">
-            <h3 id="product-name"></h3>
-            <p id="product-price"></p>
-            <p id="product-desc" style="color: #c0c0c0; margin: 15px 20px;"></p>
-            <div class="star-rating" id="product-rating"></div>
-            <button class="add-to-cart-btn" id="add-to-cart">Add to Cart</button>
-
-            <!-- Rating System -->
+        <div class="product-container">
+            <!-- Product Image Gallery -->
+            <div class="product-image-gallery animate-in delayed-1">
+                <img id="product-img" alt="Product">
+            </div>
+            
+            <!-- Product Info -->
+            <div class="product-info">
+                <h1 id="product-title" class="product-title animate-in delayed-1"></h1>
+                
+                <div class="product-rating animate-in delayed-2" id="product-rating"></div>
+                
+                <div class="price-container animate-in delayed-2">
+                    <span id="product-price" class="product-price"></span>
+                    <span id="product-discount" class="product-discount"></span>
+                </div>
+                
+                <p id="product-desc" class="product-description animate-in delayed-3"></p>
+                
+                <div class="product-specs animate-in delayed-4">
+                    <h4>Game Specifications</h4>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <span class="spec-label">Category</span>
+                            <span class="spec-value" id="product-category"></span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Platform</span>
+                            <span class="spec-value">Steam, Epic Games</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Release</span>
+                            <span class="spec-value">2025</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Publisher</span>
+                            <span class="spec-value">ZafaGo Games</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons animate-in delayed-5">
+                    <button class="add-to-cart-btn" id="add-to-cart">Add to Cart</button>
+                    <button class="add-to-wishlist-btn" id="add-to-wishlist">
+                        <span>♡</span> Add to Wishlist
+                    </button>
+                </div>
+                
+                <div class="share-buttons animate-in delayed-5">
+                    <div class="share-button">
+                        <span>✉</span>
+                    </div>
+                    <div class="share-button">
+                        <span>f</span>
+                    </div>
+                    <div class="share-button">
+                        <span>t</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rating System -->
+        <div class="game-card" style="max-width: 800px; margin: 30px auto;">
             <div class="rating-container">
                 <h4 style="margin-top: 30px;">Rate this game:</h4>
                 <div class="rating-stars" id="rating-stars">
@@ -56,8 +331,10 @@
                     <!-- Reviews will be dynamically loaded here -->
                 </div>
             </div>
-
-            <!-- Recommendations Section -->
+        </div>
+        
+        <!-- Recommendations Section -->
+        <div class="game-card" style="max-width: 1200px; margin: 0 auto 30px;">
             <div class="recommendations-section">
                 <h3>You May Also Like</h3>
                 <div id="recommendations-container" class="recommendations-container">
@@ -73,6 +350,7 @@
     <script src="scripts/games.js"></script>
     <script src="scripts/features.js"></script>
     <script src="scripts/navbar.js"></script>
+    <script src="scripts/cart.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -80,7 +358,11 @@
             const productId = parseInt(urlParams.get('id'));
             const product = gameData.find(g => g.id === productId);
             const user = JSON.parse(localStorage.getItem('user')) || {};
-
+            
+            // Get wishlist from localStorage or initialize empty array
+            let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+            const isInWishlist = wishlist.some(id => id === productId);
+            
             // Initialize reviews storage if it doesn't exist
             if (!localStorage.getItem('reviews')) {
                 localStorage.setItem('reviews', JSON.stringify({}));
@@ -95,10 +377,21 @@
                 document.title = `ZafaGo - ${product.title}`;
                 document.getElementById('product-title').textContent = product.title;
                 document.getElementById('product-img').src = product.image;
-                document.getElementById('product-name').textContent = product.title;
+                
+                // Set product category
+                document.getElementById('product-category').textContent = 
+                    product.category.charAt(0).toUpperCase() + product.category.slice(1);
 
                 const finalPrice = product.discount > 0 ? (product.price * (1 - product.discount / 100)).toFixed(2) : product.price;
-                document.getElementById('product-price').textContent = `$${finalPrice}${product.discount > 0 ? ' (-' + product.discount + '%)' : ''}`;
+                document.getElementById('product-price').textContent = `$${finalPrice}`;
+                
+                // Show/hide discount
+                if (product.discount > 0) {
+                    document.getElementById('product-discount').textContent = `-${product.discount}%`;
+                } else {
+                    document.getElementById('product-discount').style.display = 'none';
+                }
+                
                 document.getElementById('product-desc').textContent = product.desc;
 
                 const ratingDiv = document.getElementById('product-rating');
@@ -116,7 +409,7 @@
                     localStorage.setItem('cart', JSON.stringify(cartItems));
                     document.getElementById('cart-total').textContent = cartItems.length;
 
-                    // Save this purchase for recommendation system
+                    // Track purchase for recommendation system
                     let purchases = JSON.parse(localStorage.getItem('purchases')) || [];
                     if (!purchases.find(p => p.id === product.id)) {
                         purchases.push({
@@ -127,14 +420,50 @@
                         localStorage.setItem('purchases', JSON.stringify(purchases));
                     }
 
-                    // Show confirmation
+                    // Show confirmation with animation
                     const addBtn = document.getElementById('add-to-cart');
-                    addBtn.textContent = 'Added to Cart!';
+                    addBtn.textContent = '✓ Added to Cart!';
                     addBtn.disabled = true;
+                    addBtn.style.background = '#00ccff';
                     setTimeout(() => {
                         addBtn.textContent = 'Add to Cart';
                         addBtn.disabled = false;
+                        addBtn.style.background = '';
                     }, 2000);
+                });
+                
+                // Wishlist functionality
+                const wishlistBtn = document.getElementById('add-to-wishlist');
+                
+                // Update wishlist button state
+                function updateWishlistButton() {
+                    if (wishlist.includes(productId)) {
+                        wishlistBtn.innerHTML = '<span>❤</span> In Wishlist';
+                        wishlistBtn.classList.add('active');
+                    } else {
+                        wishlistBtn.innerHTML = '<span>♡</span> Add to Wishlist';
+                        wishlistBtn.classList.remove('active');
+                    }
+                }
+                
+                // Initial button state
+                updateWishlistButton();
+                
+                // Add wishlist click handler
+                wishlistBtn.addEventListener('click', () => {
+                    if (wishlist.includes(productId)) {
+                        // Remove from wishlist
+                        wishlist = wishlist.filter(id => id !== productId);
+                    } else {
+                        // Add to wishlist
+                        wishlist.push(productId);
+                    }
+                    
+                    // Save wishlist to localStorage
+                    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                    
+                    // Update button
+                    updateWishlistButton();
                 });
 
                 // Rating system functionality
@@ -221,7 +550,7 @@
                     alert('Thank you for your review!');
                 });
 
-                // Display reviews
+                // Display reviews with animation
                 function displayReviews(reviews) {
                     const reviewsContainer = document.getElementById('reviews-container');
                     reviewsContainer.innerHTML = '';
@@ -234,7 +563,7 @@
                     // Sort reviews by date (newest first)
                     reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                    reviews.forEach(review => {
+                    reviews.forEach((review, index) => {
                         const reviewDate = new Date(review.date);
                         const formattedDate = reviewDate.toLocaleDateString('en-US', {
                             year: 'numeric',
@@ -243,7 +572,8 @@
                         });
 
                         const reviewItem = document.createElement('div');
-                        reviewItem.className = 'review-item';
+                        reviewItem.className = 'review-item animate-in';
+                        reviewItem.style.animationDelay = `${0.1 * index}s`;
                         reviewItem.innerHTML = `
                             <div class="review-header">
                                 <span class="review-user">${review.userName}</span>
@@ -257,77 +587,17 @@
                     });
                 }
 
-                // Generate recommendations based on purchase history
-                function generateRecommendations() {
-                    const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
-                    const recommendationsContainer = document.getElementById('recommendations-container');
-
-                    // If no purchase history, show random games from same category
-                    if (purchases.length === 0) {
-                        // Filter games from same category except current game
-                        const sameCategory = gameData.filter(g => g.category === product.category && g.id !== product.id);
-
-                        // Show 5 random games
-                        const recommendations = sameCategory.sort(() => 0.5 - Math.random()).slice(0, 5);
-                        displayRecommendations(recommendations);
-                        return;
-                    }
-
-                    // Get user's most purchased categories
-                    const categories = {};
-                    purchases.forEach(p => {
-                        categories[p.category] = (categories[p.category] || 0) + 1;
-                    });
-
-                    // Sort categories by purchase count
-                    const sortedCategories = Object.entries(categories)
-                        .sort((a, b) => b[1] - a[1])
-                        .map(entry => entry[0]);
-
-                    // Filter games from user's top categories and high ratings
-                    let recommendations = [];
-
-                    // Add games from the current product's category with high ratings
-                    const sameCategory = gameData.filter(g => g.category === product.category && g.id !== product.id);
-                    const topRatedInCategory = sameCategory.sort((a, b) => b.rating - a.rating).slice(0, 2);
-                    recommendations = [...recommendations, ...topRatedInCategory];
-
-                    // Add games from user's top categories
-                    for (const category of sortedCategories) {
-                        if (recommendations.length >= 5) break;
-                        if (category === product.category) continue;
-
-                        const categoryGames = gameData.filter(g => g.category === category && g.id !== product.id);
-                        const topInCategory = categoryGames.sort((a, b) => b.rating - a.rating).slice(0, 2);
-                        recommendations = [...recommendations, ...topInCategory];
-                    }
-
-                    // Fill remaining slots with random popular games
-                    if (recommendations.length < 5) {
-                        const popularGames = gameData
-                            .filter(g => !recommendations.some(r => r.id === g.id) && g.id !== product.id)
-                            .sort((a, b) => b.rating - a.rating)
-                            .slice(0, 5 - recommendations.length);
-
-                        recommendations = [...recommendations, ...popularGames];
-                    }
-
-                    // Limit to 5 recommendations
-                    recommendations = recommendations.slice(0, 5);
-
-                    // Display recommendations
-                    displayRecommendations(recommendations);
-                }
-
+                // Use the improved recommendations API
                 function displayRecommendations(recommendations) {
                     const container = document.getElementById('recommendations-container');
                     container.innerHTML = '';
 
-                    recommendations.forEach(game => {
+                    recommendations.forEach((game, index) => {
                         const finalPrice = game.discount > 0 ? (game.price * (1 - game.discount / 100)).toFixed(2) : game.price;
 
                         const card = document.createElement('div');
-                        card.className = 'recommendation-card';
+                        card.className = 'recommendation-card animate-in';
+                        card.style.animationDelay = `${0.1 * index}s`;
                         card.dataset.id = game.id;
                         card.innerHTML = `
                             <img src="${game.image}" alt="${game.title}">
@@ -346,9 +616,22 @@
                     });
                 }
 
-                // Initialize page
+                // Initialize page with improved animations
                 displayReviews(productReviews);
-                generateRecommendations();
+                
+                // Use the global recommendation API
+                if (window.zafagoFeatures) {
+                    const recommendations = window.zafagoFeatures.getRecommendations(productId, 5);
+                    displayRecommendations(recommendations);
+                }
+                
+                // Save to recently viewed
+                const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+                // Remove if already in list to add to front
+                const filteredRecent = recentlyViewed.filter(id => id !== productId);
+                // Add to beginning and limit to 10 items
+                const updatedRecent = [productId, ...filteredRecent].slice(0, 10);
+                localStorage.setItem('recentlyViewed', JSON.stringify(updatedRecent));
             }
         });
     </script>
