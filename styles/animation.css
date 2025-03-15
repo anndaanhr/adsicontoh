@@ -1,0 +1,312 @@
+/* styles/animation.css */
+/* Animation library for ZafaGo */
+
+/* Page Transition */
+.page-transition {
+    opacity: 0;
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+  
+  /* Fix for the flashing/disturbing animations on page load */
+  .page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 15, 15, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+  }
+  
+  body.light-mode .page-loader {
+    background: rgba(245, 245, 245, 0.95);
+  }
+  
+  .loader {
+    width: 48px;
+    height: 48px;
+    border: 3px solid transparent;
+    border-top-color: #ff4081;
+    border-bottom-color: #00ccff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  body.light-mode .loader {
+    border-top-color: #00ccff;
+    border-bottom-color: #ff4081;
+  }
+  
+  /* Fade In */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.5s ease forwards;
+  }
+  
+  /* Fade In Up */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp 0.5s ease forwards;
+  }
+  
+  /* Fade In Down */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .fade-in-down {
+    animation: fadeInDown 0.5s ease forwards;
+  }
+  
+  /* Scale In */
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  .scale-in {
+    animation: scaleIn 0.5s ease forwards;
+  }
+  
+  /* Slide In Right */
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .slide-in-right {
+    animation: slideInRight 0.5s ease forwards;
+  }
+  
+  /* Slide In Left */
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .slide-in-left {
+    animation: slideInLeft 0.5s ease forwards;
+  }
+  
+  /* Floating */
+  @keyframes floating {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  
+  .floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+  
+  /* Pulse */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .pulse {
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  /* Shimmer */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  
+  .shimmer {
+    background: linear-gradient(90deg, 
+      rgba(255, 255, 255, 0) 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  /* Card Hover Effects */
+  .hover-lift {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Image Zoom */
+  .img-zoom-container {
+    overflow: hidden;
+  }
+  
+  .img-zoom {
+    transition: transform 0.5s ease;
+  }
+  
+  .img-zoom:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Button Hover Effects */
+  .btn-glow {
+    transition: all 0.3s ease;
+  }
+  
+  .btn-glow:hover {
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8), 0 0 30px rgba(255, 64, 129, 0.6);
+  }
+  
+  body.light-mode .btn-glow:hover {
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6);
+  }
+  
+  /* Animation Delays */
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+  .delay-6 { animation-delay: 0.6s; }
+  .delay-7 { animation-delay: 0.7s; }
+  .delay-8 { animation-delay: 0.8s; }
+  .delay-9 { animation-delay: 0.9s; }
+  .delay-10 { animation-delay: 1s; }
+  
+  /* Spin animation for loader */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Gradient Text Animation */
+  @keyframes gradientText {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .gradient-text {
+    background: linear-gradient(120deg, #ff4081, #00ccff, #ff4081);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientText 3s linear infinite;
+  }
+  
+  /* Game Card Hover Animation */
+  .game-card {
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+  
+  .game-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Icon animations */
+  .icon-bounce {
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+  
+  .icon-bounce:hover {
+    transform: scale(1.2);
+  }
+  
+  /* Notification Dot Animation */
+  @keyframes notificationPulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(255, 64, 129, 0.7);
+    }
+    
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(255, 64, 129, 0);
+    }
+    
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(255, 64, 129, 0);
+    }
+  }
+  
+  .notification-dot {
+    width: 10px;
+    height: 10px;
+    background: #ff4081;
+    border-radius: 50%;
+    animation: notificationPulse 2s infinite;
+  }
+  
+  body.light-mode .notification-dot {
+    background: #00ccff;
+  }
