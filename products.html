@@ -1,0 +1,88 @@
+<!-- products.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZafaGo - Store</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/store.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">ZafaGo</div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Store</a></li>
+            <li><a href="promo.html">Deals</a></li>
+            <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><div id="auth-link"></div></li>
+        </ul>
+    </nav>
+
+    <section class="products-page">
+        <h2>Our Store</h2>
+        <div class="filter-bar">
+            <input type="text" id="search-input" placeholder="Search games...">
+            <select id="category-filter">
+                <option value="all">All Categories</option>
+                <option value="action">Action</option>
+                <option value="adventure">Adventure</option>
+                <option value="rpg">RPG</option>
+                <option value="simulation">Simulation</option>
+                <option value="sports">Sports</option>
+                <option value="strategy">Strategy</option>
+                <option value="horror">Horror</option>
+                <option value="party">Party</option>
+                <option value="puzzle">Puzzle</option>
+                <option value="platformer">Platformer</option>
+                <option value="survival">Survival</option>
+                <option value="sandbox">Sandbox</option>
+            </select>
+            <select id="sort-filter">
+                <option value="name-asc">Name (A-Z)</option>
+                <option value="name-desc">Name (Z-A)</option>
+                <option value="rating-desc">Rating (High to Low)</option>
+                <option value="price-asc">Price (Low to High)</option>
+                <option value="price-desc">Price (High to Low)</option>
+            </select>
+        </div>
+        <div class="carousel" id="carousel">
+            <button class="carousel-btn prev-btn">&lt;</button>
+            <div class="games-container" id="games-list"></div>
+            <button class="carousel-btn next-btn">&gt;</button>
+        </div>
+        <div class="see-all-container">
+            <button class="btn see-all-btn" id="see-all-btn">See All</button>
+        </div>
+        <div class="full-games" id="full-games" style="display: none;">
+            <div class="games-container" id="full-games-list"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </footer>
+    
+    <script src="scripts/games.js"></script>
+    <script src="scripts/products.js"></script>
+    <script src="scripts/navbar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentMode = localStorage.getItem('theme') || 'dark';
+            document.body.classList.toggle('light-mode', currentMode === 'light');
+
+            document.addEventListener('themeChange', () => {
+                const newMode = localStorage.getItem('theme') || 'dark';
+                document.body.classList.toggle('light-mode', newMode === 'light');
+                console.log('Mode Updated:', newMode, 'Body Class:', document.body.className);
+            });
+        });
+    </script>
+</body>
+</html>

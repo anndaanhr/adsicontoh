@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZafaGo - Admin</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/admin.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">ZafaGo</div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Store</a></li>
+            <li><a href="admin.html">Admin</a></li>
+            <li><div id="auth-link"></div></li> 
+        </ul>
+    </nav>
+
+    <section class="admin-page">
+        <h2>Admin Panel</h2>
+        <div class="admin-form">
+            <h3>Add Product</h3>
+            <form id="admin-form">
+                <input type="text" placeholder="Product Name" required>
+                <input type="number" placeholder="Price" required>
+                <input type="text" placeholder="Image URL" required>
+                <button type="submit" class="btn">Add</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </footer>
+
+    <script src="scripts/navbar.js"></script>
+    <script>
+        document.getElementById('admin-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Product added successfully!');
+            e.target.reset();
+        });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const currentMode = localStorage.getItem('theme') || 'dark';
+        document.body.classList.toggle('light-mode', currentMode === 'light');
+
+        document.addEventListener('themeChange', () => {
+            const newMode = localStorage.getItem('theme') || 'dark';
+            document.body.classList.toggle('light-mode', newMode === 'light');
+        });
+    });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZafaGo - Checkout</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/checkout.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">ZafaGo</div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Store</a></li>
+            <li><a href="promo.html">Deals</a></li>
+            <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><div id="auth-link"></div></li>
+        </ul>
+    </nav>
+
+    <section class="checkout-page">
+        <h2>Checkout</h2>
+        
+        <div class="checkout-container">
+            <div class="checkout-form-container">
+                <form id="checkout-form">
+                    <div class="checkout-section">
+                        <h3>Billing Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" placeholder="Enter your full name" required>
+                            <span class="validation-message" id="name-validation"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" readonly>
+                            <span class="validation-message" id="email-validation"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-section">
+                        <h3>Payment Method</h3>
+                        
+                        <div class="payment-methods">
+                            <div class="payment-method active" data-method="credit-card">
+                                <span class="payment-icon">💳</span>
+                                <span>Credit Card</span>
+                            </div>
+                            <div class="payment-method" data-method="paypal">
+                                <span class="payment-icon">🅿️</span>
+                                <span>PayPal</span>
+                            </div>
+                            <div class="payment-method" data-method="crypto">
+                                <span class="payment-icon">₿</span>
+                                <span>Crypto</span>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-details" id="credit-card-details">
+                            <div class="form-group">
+                                <label for="card-number">Card Number</label>
+                                <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+                                <span class="validation-message" id="card-validation"></span>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="expiry">Expiry Date</label>
+                                    <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+                                    <span class="validation-message" id="expiry-validation"></span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="cvv">CVV</label>
+                                    <input type="text" id="cvv" placeholder="123" maxlength="3">
+                                    <span class="validation-message" id="cvv-validation"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-details" id="paypal-details" style="display: none;">
+                            <p>You will be redirected to PayPal to complete your payment.</p>
+                        </div>
+                        
+                        <div class="payment-details" id="crypto-details" style="display: none;">
+                            <p>You will be redirected to our crypto payment provider to complete your transaction.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-section">
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms">I agree to the <a href="#" class="terms-link">Terms and Conditions</a></label>
+                            <span class="validation-message" id="terms-validation"></span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn checkout-btn" id="submit-btn">Complete Purchase</button>
+                    <div class="loading-spinner" id="loading-spinner">
+                        <div class="spinner"></div>
+                        <span>Processing your order...</span>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div id="order-items">
+                    <!-- Order items will be loaded here -->
+                </div>
+                
+                <div class="summary-totals">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="subtotal-price">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Discount</span>
+                        <span id="discount-amount">-$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="total-price">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="secure-checkout">
+                    <p>🔒 Secure payment</p>
+                    <p>✓ Instant digital delivery</p>
+                    <p>⭐ 24/7 customer support</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const checkoutForm = document.getElementById('checkout-form');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const cardNumberInput = document.getElementById('card-number');
+            const expiryInput = document.getElementById('expiry');
+            const cvvInput = document.getElementById('cvv');
+            const termsCheckbox = document.getElementById('terms');
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            const cardDetails = document.getElementById('credit-card-details');
+            const paypalDetails = document.getElementById('paypal-details');
+            const cryptoDetails = document.getElementById('crypto-details');
+            const orderItemsDiv = document.getElementById('order-items');
+            const subtotalPriceSpan = document.getElementById('subtotal-price');
+            const discountAmountSpan = document.getElementById('discount-amount');
+            const totalPriceSpan = document.getElementById('total-price');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            // Get data from localStorage
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            const user = JSON.parse(localStorage.getItem('user')) || {};
+            
+            // Set auth link
+            const authLink = document.getElementById('auth-link');
+            if (authLink) {
+                if (user.email) {
+                    authLink.innerHTML = '<a href="profile.html">My Account</a>';
+                } else {
+                    authLink.innerHTML = '<a href="login.html">Login</a>';
+                }
+            }
+            
+            // Redirect if not logged in or cart is empty
+            if (!user.email) {
+                window.location.href = 'login.html?redirect=checkout';
+                return;
+            }
+            
+            if (cartItems.length === 0) {
+                window.location.href = 'cart.html';
+                return;
+            }
+            
+            // Fill user info
+            emailInput.value = user.email;
+            nameInput.value = user.name || '';
+            
+            // Calculate order totals
+            function calculateTotals() {
+                let subtotal = 0;
+                let discount = 0;
+                
+                cartItems.forEach(item => {
+                    const itemPrice = parseFloat(item.price);
+                    const itemDiscount = item.discount > 0 ? (itemPrice * item.discount / 100) : 0;
+                    
+                    subtotal += itemPrice;
+                    discount += itemDiscount;
+                });
+                
+                const total = subtotal - discount;
+                
+                subtotalPriceSpan.textContent = `$${subtotal.toFixed(2)}`;
+                discountAmountSpan.textContent = `-$${discount.toFixed(2)}`;
+                totalPriceSpan.textContent = `$${total.toFixed(2)}`;
+                
+                return { subtotal, discount, total };
+            }
+            
+            // Fill order items
+            function loadOrderItems() {
+                orderItemsDiv.innerHTML = '';
+                
+                cartItems.forEach(item => {
+                    const finalPrice = item.discount > 0 
+                        ? (item.price * (1 - item.discount / 100)).toFixed(2) 
+                        : item.price.toFixed(2);
+                    
+                    const orderItem = document.createElement('div');
+                    orderItem.className = 'order-item';
+                    
+                    orderItem.innerHTML = `
+                        <div class="item-image">
+                            <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/50x50?text=${encodeURIComponent(item.title)}'">
+                        </div>
+                        <div class="item-details">
+                            <h4>${item.title}</h4>
+                            <div class="item-price">
+                                ${item.discount > 0 ? 
+                                `<span class="discount-badge">-${item.discount}%</span>` : ''}
+                                <span class="final-price">$${finalPrice}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    orderItemsDiv.appendChild(orderItem);
+                });
+                
+                calculateTotals();
+            }
+            
+            // Toggle payment methods
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', () => {
+                    // Remove active class from all methods
+                    paymentMethods.forEach(m => m.classList.remove('active'));
+                    
+                    // Add active class to clicked method
+                    method.classList.add('active');
+                    
+                    // Show corresponding payment details
+                    const paymentType = method.dataset.method;
+                    
+                    cardDetails.style.display = paymentType === 'credit-card' ? 'block' : 'none';
+                    paypalDetails.style.display = paymentType === 'paypal' ? 'block' : 'none';
+                    cryptoDetails.style.display = paymentType === 'crypto' ? 'block' : 'none';
+                });
+            });
+            
+            // Format credit card number
+            cardNumberInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                let formattedValue = '';
+                
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                
+                e.target.value = formattedValue;
+                
+                // Validate
+                const cardValidation = document.getElementById('card-validation');
+                if (value.length < 16) {
+                    cardValidation.textContent = 'Card number must be 16 digits';
+                    cardValidation.className = 'validation-message error';
+                } else {
+                    cardValidation.textContent = '✓';
+                    cardValidation.className = 'validation-message success';
+                }
+            });
+            
+            // Format expiry date
+            expiryInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                
+                if (value.length > 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2);
+                }
+                
+                e.target.value = value;
+                
+                // Validate
+                const expiryValidation = document.getElementById('expiry-validation');
+                if (value.length < 5) {
+                    expiryValidation.textContent = 'Enter a valid expiry date (MM/YY)';
+                    expiryValidation.className = 'validation-message error';
+                } else {
+                    const month = parseInt(value.substring(0, 2));
+                    if (month < 1 || month > 12) {
+                        expiryValidation.textContent = 'Invalid month';
+                        expiryValidation.className = 'validation-message error';
+                    } else {
+                        expiryValidation.textContent = '✓';
+                        expiryValidation.className = 'validation-message success';
+                    }
+                }
+            });
+            
+            // Validate CVV
+            cvvInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                e.target.value = value;
+                
+                const cvvValidation = document.getElementById('cvv-validation');
+                if (value.length < 3) {
+                    cvvValidation.textContent = 'CVV must be 3 digits';
+                    cvvValidation.className = 'validation-message error';
+                } else {
+                    cvvValidation.textContent = '✓';
+                    cvvValidation.className = 'validation-message success';
+                }
+            });
+            
+            // Form submission
+            checkoutForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate name
+                if (nameInput.value.trim().length < 3) {
+                    const nameValidation = document.getElementById('name-validation');
+                    nameValidation.textContent = 'Please enter your full name';
+                    nameValidation.className = 'validation-message error';
+                    nameInput.focus();
+                    return;
+                }
+                
+                // Validate payment details for credit card
+                const activePaymentMethod = document.querySelector('.payment-method.active').dataset.method;
+                
+                if (activePaymentMethod === 'credit-card') {
+                    // Check card number
+                    if (cardNumberInput.value.replace(/\s/g, '').length < 16) {
+                        const cardValidation = document.getElementById('card-validation');
+                        cardValidation.textContent = 'Please enter a valid card number';
+                        cardValidation.className = 'validation-message error';
+                        cardNumberInput.focus();
+                        return;
+                    }
+                    
+                    // Check expiry
+                    if (expiryInput.value.length < 5) {
+                        const expiryValidation = document.getElementById('expiry-validation');
+                        expiryValidation.textContent = 'Please enter a valid expiry date';
+                        expiryValidation.className = 'validation-message error';
+                        expiryInput.focus();
+                        return;
+                    }
+                    
+                    // Check CVV
+                    if (cvvInput.value.length < 3) {
+                        const cvvValidation = document.getElementById('cvv-validation');
+                        cvvValidation.textContent = 'Please enter a valid CVV';
+                        cvvValidation.className = 'validation-message error';
+                        cvvInput.focus();
+                        return;
+                    }
+                }
+                
+                // Check terms
+                if (!termsCheckbox.checked) {
+                    const termsValidation = document.getElementById('terms-validation');
+                    termsValidation.textContent = 'You must agree to the terms and conditions';
+                    termsValidation.className = 'validation-message error';
+                    return;
+                }
+                
+                // Disable submit button and show loading spinner
+                submitBtn.disabled = true;
+                loadingSpinner.style.display = 'flex';
+                
+                // Process order
+                setTimeout(() => {
+                    processOrder();
+                }, 1500);
+            });
+            
+            // Process the order
+            function processOrder() {
+                try {
+                    // Generate unique order ID
+                    const orderId = Date.now();
+                    
+                    // Generate redeem codes for each game
+                    const redeemCodes = cartItems.map(item => {
+                        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                        let code = '';
+                        for (let i = 0; i < 20; i++) {
+                            if (i === 4 || i === 9 || i === 14) {
+                                code += '-';
+                            } else {
+                                code += chars.charAt(Math.floor(Math.random() * chars.length));
+                            }
+                        }
+                        
+                        return {
+                            ...item,
+                            redeemCode: code,
+                            orderId: orderId,
+                            purchaseDate: new Date().toISOString()
+                        };
+                    });
+                    
+                    // Save order to user's order history
+                    const ordersKey = `orders_${user.email}`;
+                    const existingOrders = JSON.parse(localStorage.getItem(ordersKey)) || [];
+                    
+                    const newOrder = {
+                        id: orderId,
+                        date: new Date().toISOString(),
+                        items: redeemCodes,
+                        total: calculateTotals().total,
+                        paymentMethod: document.querySelector('.payment-method.active').dataset.method
+                    };
+                    
+                    existingOrders.push(newOrder);
+                    localStorage.setItem(ordersKey, JSON.stringify(existingOrders));
+                    
+                    // Save latest order for success page
+                    localStorage.setItem('latestOrder', JSON.stringify(redeemCodes));
+                    
+                    // Clear cart
+                    localStorage.removeItem('cart');
+                    
+                    // Redirect to success page
+                    window.location.href = 'success.html';
+                    
+                } catch (error) {
+                    console.error('Error processing order:', error);
+                    submitBtn.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                    
+                    alert('There was an error processing your order. Please try again.');
+                }
+            }
+            
+            // Load cart info
+            document.getElementById('cart-total').textContent = cartItems.length;
+            
+            // Set theme
+            const currentMode = localStorage.getItem('theme') || 'dark';
+            document.body.classList.toggle('light-mode', currentMode === 'light');
+            
+            // Load order items
+            loadOrderItems();
+            
+            // Handle theme changes
+            document.addEventListener('themeChange', () => {
+                const newMode = localStorage.getItem('theme') || 'dark';
+                document.body.classList.toggle('light-mode', newMode === 'light');
+            });
+        });
+    </script>
+</body>
+</html>

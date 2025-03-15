@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZafaGo - Deals</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/promo.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">ZafaGo</div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Store</a></li>
+            <li><a href="promo.html">Deals</a></li>
+            <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><div id="auth-link"></div></li> 
+        </ul>
+    </nav>
+
+    <section class="promo-page">
+        <h2>Hot Deals</h2>
+        <div class="promo-grid" id="promo-list"></div>
+        <div class="games-container" id="sale-games" style="display: none;"></div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </footer>
+
+    <script src="scripts/promo.js"></script>
+    <script src="scripts/navbar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentMode = localStorage.getItem('theme') || 'dark';
+            document.body.classList.toggle('light-mode', currentMode === 'light');
+
+            document.addEventListener('themeChange', () => {
+                const newMode = localStorage.getItem('theme') || 'dark';
+                document.body.classList.toggle('light-mode', newMode === 'light');
+                console.log('Mode Updated:', newMode, 'Body Class:', document.body.className); 
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZafaGo - Ultimate Gaming</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/home.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">ZafaGo</div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Store</a></li>
+            <li><a href="promo.html">Deals</a></li>
+            <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><div id="auth-link"></div></li>
+            <li><button id="mode-toggle" class="mode-toggle">☀️</button></li> 
+        </ul>
+    </nav>
+
+    <section class="hero-section">
+        <div class="parallax-container">
+            <video class="parallax-layer layer-sky" data-speed="0.4" autoplay muted loop playsinline>
+                <source id="video-source" src="assets/sky-anime-dark.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <canvas id="sakura-canvas" class="sakura-effect"></canvas>
+        <div class="hero-text">
+            <h1>Step Into ZafaGo</h1>
+            <p>Unleash your gaming spirit with epic titles.</p>
+            <a href="products.html" class="hero-btn">Explore Now</a>
+        </div>
+    </section>
+
+    <section class="featured-games">
+        <h2>Hot Games</h2>
+        <div class="games-container" id="games-list"></div>
+    </section>
+    
+    <!-- New recommendations section -->
+    <section class="featured-games recommendations-section">
+        <h2>Recommended For You</h2>
+        <div class="recommendations-container" id="recommendations-list"></div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </footer>
+
+    <script src="scripts/games.js"></script>
+    <script src="scripts/features.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/navbar.js"></script>
+    <script src="scripts/cart.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoSource = document.getElementById('video-source');
+            const video = document.querySelector('.layer-sky');
+            const currentMode = localStorage.getItem('theme') || 'dark';
+            document.body.classList.toggle('light-mode', currentMode === 'light');
+            updateVideo(currentMode);
+            
+            // Display recommendations
+            const recommendationsList = document.getElementById('recommendations-list');
+            const user = JSON.parse(localStorage.getItem('user')) || {};
+            const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+            
+            // If user has no purchases yet, hide the section
+            if (purchases.length === 0 && !user.email) {
+                const recommendationsSection = document.querySelector('.recommendations-section');
+                if (recommendationsSection) {
+                    recommendationsSection.style.display = 'none';
+                }
+            } else {
+                // Get recommendations using our features API
+                setTimeout(() => {
+                    if (window.zafagoFeatures && recommendationsList) {
+                        const recommendations = window.zafagoFeatures.getRecommendations(null, 5);
+                        
+                        recommendations.forEach(game => {
+                            const finalPrice = game.discount > 0 ? (game.price * (1 - game.discount / 100)).toFixed(2) : game.price;
+                            
+                            const card = document.createElement('div');
+                            card.className = 'recommendation-card';
+                            card.innerHTML = `
+                                <img src="${game.image}" alt="${game.title}">
+                                <div class="recommendation-card-info">
+                                    <h4>${game.title}</h4>
+                                    <div class="rating">${'★'.repeat(game.rating)}${'☆'.repeat(5 - game.rating)}</div>
+                                    <div class="price">$${finalPrice}</div>
+                                </div>
+                            `;
+                            
+                            card.addEventListener('click', () => {
+                                window.location.href = `product-detail.html?id=${game.id}`;
+                            });
+                            
+                            recommendationsList.appendChild(card);
+                        });
+                    }
+                }, 100); // Small delay to ensure features.js has loaded
+            }
+
+            function updateVideo(mode) {
+                videoSource.src = mode === 'light' ? 'assets/sky-anime-light.mp4' : 'assets/sky-anime-dark.mp4';
+                video.load();
+                video.play();
+            }
+
+            document.addEventListener('themeChange', () => {
+                const newMode = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+                updateVideo(newMode);
+            });
+        });
+    </script>
+</body>
+</html>

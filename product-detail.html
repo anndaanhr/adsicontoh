@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZafaGo - Product Detail</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/store.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">ZafaGo</div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Store</a></li>
+            <li><a href="promo.html">Deals</a></li>
+            <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><div id="auth-link"></div></li>
+            <li><button id="mode-toggle" class="mode-toggle">☀️</button></li>
+        </ul>
+    </nav>
+
+    <section class="products-page">
+        <h2 id="product-title"></h2>
+        <div class="game-card" style="max-width: 800px; margin: 0 auto;">
+            <img id="product-img" alt="Product">
+            <h3 id="product-name"></h3>
+            <p id="product-price"></p>
+            <p id="product-desc" style="color: #c0c0c0; margin: 15px 20px;"></p>
+            <div class="star-rating" id="product-rating"></div>
+            <button class="add-to-cart-btn" id="add-to-cart">Add to Cart</button>
+
+            <!-- Rating System -->
+            <div class="rating-container">
+                <h4 style="margin-top: 30px;">Rate this game:</h4>
+                <div class="rating-stars" id="rating-stars">
+                    <span class="rating-star" data-rating="1">☆</span>
+                    <span class="rating-star" data-rating="2">☆</span>
+                    <span class="rating-star" data-rating="3">☆</span>
+                    <span class="rating-star" data-rating="4">☆</span>
+                    <span class="rating-star" data-rating="5">☆</span>
+                </div>
+                <textarea id="review-text" placeholder="Write your review here..." rows="4" style="width: 100%; padding: 10px; margin-top: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: white;"></textarea>
+                <button id="submit-review" class="btn" style="margin-top: 10px;">Submit Review</button>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-section">
+                <h3>Customer Reviews</h3>
+                <div id="reviews-container">
+                    <!-- Reviews will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Recommendations Section -->
+            <div class="recommendations-section">
+                <h3>You May Also Like</h3>
+                <div id="recommendations-container" class="recommendations-container">
+                    <!-- Recommendations will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </footer>
+    <script src="scripts/games.js"></script>
+    <script src="scripts/features.js"></script>
+    <script src="scripts/navbar.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = parseInt(urlParams.get('id'));
+            const product = gameData.find(g => g.id === productId);
+            const user = JSON.parse(localStorage.getItem('user')) || {};
+
+            // Initialize reviews storage if it doesn't exist
+            if (!localStorage.getItem('reviews')) {
+                localStorage.setItem('reviews', JSON.stringify({}));
+            }
+
+            // Get existing reviews
+            const allReviews = JSON.parse(localStorage.getItem('reviews'));
+            const productReviews = allReviews[productId] || [];
+
+            // Handle product display
+            if (product) {
+                document.title = `ZafaGo - ${product.title}`;
+                document.getElementById('product-title').textContent = product.title;
+                document.getElementById('product-img').src = product.image;
+                document.getElementById('product-name').textContent = product.title;
+
+                const finalPrice = product.discount > 0 ? (product.price * (1 - product.discount / 100)).toFixed(2) : product.price;
+                document.getElementById('product-price').textContent = `$${finalPrice}${product.discount > 0 ? ' (-' + product.discount + '%)' : ''}`;
+                document.getElementById('product-desc').textContent = product.desc;
+
+                const ratingDiv = document.getElementById('product-rating');
+                ratingDiv.innerHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    const star = document.createElement('span');
+                    star.textContent = i <= product.rating ? '★' : '☆';
+                    ratingDiv.appendChild(star);
+                }
+
+                // Add to cart functionality
+                document.getElementById('add-to-cart').addEventListener('click', () => {
+                    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                    cartItems.push(product);
+                    localStorage.setItem('cart', JSON.stringify(cartItems));
+                    document.getElementById('cart-total').textContent = cartItems.length;
+
+                    // Save this purchase for recommendation system
+                    let purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+                    if (!purchases.find(p => p.id === product.id)) {
+                        purchases.push({
+                            id: product.id,
+                            category: product.category,
+                            timestamp: Date.now()
+                        });
+                        localStorage.setItem('purchases', JSON.stringify(purchases));
+                    }
+
+                    // Show confirmation
+                    const addBtn = document.getElementById('add-to-cart');
+                    addBtn.textContent = 'Added to Cart!';
+                    addBtn.disabled = true;
+                    setTimeout(() => {
+                        addBtn.textContent = 'Add to Cart';
+                        addBtn.disabled = false;
+                    }, 2000);
+                });
+
+                // Rating system functionality
+                const ratingStars = document.querySelectorAll('.rating-star');
+                let selectedRating = 0;
+
+                ratingStars.forEach(star => {
+                    star.addEventListener('mouseover', () => {
+                        const rating = parseInt(star.dataset.rating);
+                        highlightStars(rating);
+                    });
+
+                    star.addEventListener('mouseout', () => {
+                        highlightStars(selectedRating);
+                    });
+
+                    star.addEventListener('click', () => {
+                        selectedRating = parseInt(star.dataset.rating);
+                        highlightStars(selectedRating);
+                    });
+                });
+
+                function highlightStars(rating) {
+                    ratingStars.forEach(star => {
+                        const starRating = parseInt(star.dataset.rating);
+                        star.textContent = starRating <= rating ? '★' : '☆';
+                        star.classList.toggle('active', starRating <= rating);
+                    });
+                }
+
+                // Submit review
+                document.getElementById('submit-review').addEventListener('click', () => {
+                    if (!user.email) {
+                        alert('Please log in to submit a review');
+                        return;
+                    }
+
+                    if (selectedRating === 0) {
+                        alert('Please select a rating');
+                        return;
+                    }
+
+                    const reviewText = document.getElementById('review-text').value.trim();
+                    if (!reviewText) {
+                        alert('Please write a review');
+                        return;
+                    }
+
+                    // Create new review
+                    const newReview = {
+                        userId: user.email,
+                        userName: user.name || user.email.split('@')[0],
+                        rating: selectedRating,
+                        text: reviewText,
+                        date: new Date().toISOString()
+                    };
+
+                    // Add to local storage
+                    if (!allReviews[productId]) {
+                        allReviews[productId] = [];
+                    }
+
+                    // Check if user already reviewed this product
+                    const existingReviewIndex = allReviews[productId].findIndex(r => r.userId === user.email);
+
+                    if (existingReviewIndex !== -1) {
+                        // Update existing review
+                        allReviews[productId][existingReviewIndex] = newReview;
+                    } else {
+                        // Add new review
+                        allReviews[productId].push(newReview);
+                    }
+
+                    localStorage.setItem('reviews', JSON.stringify(allReviews));
+
+                    // Reset form
+                    selectedRating = 0;
+                    highlightStars(0);
+                    document.getElementById('review-text').value = '';
+
+                    // Refresh reviews
+                    displayReviews(allReviews[productId]);
+
+                    alert('Thank you for your review!');
+                });
+
+                // Display reviews
+                function displayReviews(reviews) {
+                    const reviewsContainer = document.getElementById('reviews-container');
+                    reviewsContainer.innerHTML = '';
+
+                    if (reviews.length === 0) {
+                        reviewsContainer.innerHTML = '<p style="text-align: center; color: #888;">No reviews yet. Be the first to review this game!</p>';
+                        return;
+                    }
+
+                    // Sort reviews by date (newest first)
+                    reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                    reviews.forEach(review => {
+                        const reviewDate = new Date(review.date);
+                        const formattedDate = reviewDate.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+
+                        const reviewItem = document.createElement('div');
+                        reviewItem.className = 'review-item';
+                        reviewItem.innerHTML = `
+                            <div class="review-header">
+                                <span class="review-user">${review.userName}</span>
+                                <span class="review-date">${formattedDate}</span>
+                            </div>
+                            <div class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                            <div class="review-text">${review.text}</div>
+                        `;
+
+                        reviewsContainer.appendChild(reviewItem);
+                    });
+                }
+
+                // Generate recommendations based on purchase history
+                function generateRecommendations() {
+                    const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+                    const recommendationsContainer = document.getElementById('recommendations-container');
+
+                    // If no purchase history, show random games from same category
+                    if (purchases.length === 0) {
+                        // Filter games from same category except current game
+                        const sameCategory = gameData.filter(g => g.category === product.category && g.id !== product.id);
+
+                        // Show 5 random games
+                        const recommendations = sameCategory.sort(() => 0.5 - Math.random()).slice(0, 5);
+                        displayRecommendations(recommendations);
+                        return;
+                    }
+
+                    // Get user's most purchased categories
+                    const categories = {};
+                    purchases.forEach(p => {
+                        categories[p.category] = (categories[p.category] || 0) + 1;
+                    });
+
+                    // Sort categories by purchase count
+                    const sortedCategories = Object.entries(categories)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(entry => entry[0]);
+
+                    // Filter games from user's top categories and high ratings
+                    let recommendations = [];
+
+                    // Add games from the current product's category with high ratings
+                    const sameCategory = gameData.filter(g => g.category === product.category && g.id !== product.id);
+                    const topRatedInCategory = sameCategory.sort((a, b) => b.rating - a.rating).slice(0, 2);
+                    recommendations = [...recommendations, ...topRatedInCategory];
+
+                    // Add games from user's top categories
+                    for (const category of sortedCategories) {
+                        if (recommendations.length >= 5) break;
+                        if (category === product.category) continue;
+
+                        const categoryGames = gameData.filter(g => g.category === category && g.id !== product.id);
+                        const topInCategory = categoryGames.sort((a, b) => b.rating - a.rating).slice(0, 2);
+                        recommendations = [...recommendations, ...topInCategory];
+                    }
+
+                    // Fill remaining slots with random popular games
+                    if (recommendations.length < 5) {
+                        const popularGames = gameData
+                            .filter(g => !recommendations.some(r => r.id === g.id) && g.id !== product.id)
+                            .sort((a, b) => b.rating - a.rating)
+                            .slice(0, 5 - recommendations.length);
+
+                        recommendations = [...recommendations, ...popularGames];
+                    }
+
+                    // Limit to 5 recommendations
+                    recommendations = recommendations.slice(0, 5);
+
+                    // Display recommendations
+                    displayRecommendations(recommendations);
+                }
+
+                function displayRecommendations(recommendations) {
+                    const container = document.getElementById('recommendations-container');
+                    container.innerHTML = '';
+
+                    recommendations.forEach(game => {
+                        const finalPrice = game.discount > 0 ? (game.price * (1 - game.discount / 100)).toFixed(2) : game.price;
+
+                        const card = document.createElement('div');
+                        card.className = 'recommendation-card';
+                        card.dataset.id = game.id;
+                        card.innerHTML = `
+                            <img src="${game.image}" alt="${game.title}">
+                            <div class="recommendation-card-info">
+                                <h4>${game.title}</h4>
+                                <div class="rating">${'★'.repeat(game.rating)}${'☆'.repeat(5 - game.rating)}</div>
+                                <div class="price">$${finalPrice}</div>
+                            </div>
+                        `;
+
+                        card.addEventListener('click', () => {
+                            window.location.href = `product-detail.html?id=${game.id}`;
+                        });
+
+                        container.appendChild(card);
+                    });
+                }
+
+                // Initialize page
+                displayReviews(productReviews);
+                generateRecommendations();
+            }
+        });
+    </script>
+</body>
+</html>

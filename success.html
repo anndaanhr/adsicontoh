@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZafaGo - Order Successful</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/success.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">ZafaGo</div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Store</a></li>
+            <li><a href="promo.html">Deals</a></li>
+            <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><div id="auth-link"></div></li>
+        </ul>
+    </nav>
+
+    <section class="success-page">
+        <div class="success-container">
+            <div class="success-header">
+                <div class="success-icon">✓</div>
+                <h2>Order Complete!</h2>
+                <p class="success-message">Your order has been successfully processed and your games are ready to download.</p>
+            </div>
+            
+            <div class="order-details">
+                <h3>Order Details</h3>
+                <div class="order-info">
+                    <p><strong>Order ID:</strong> <span id="order-id"></span></p>
+                    <p><strong>Order Date:</strong> <span id="order-date"></span></p>
+                    <p><strong>Email:</strong> <span id="order-email"></span></p>
+                </div>
+            </div>
+            
+            <div class="game-keys">
+                <h3>Your Game Keys</h3>
+                <p class="keys-info">These are your game keys. Keep them safe and do not share them with anyone.</p>
+                
+                <div class="keys-container" id="keys-container">
+                    <!-- Game keys will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="next-steps">
+                <div class="next-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Redeem your keys</h4>
+                        <p>Copy the keys above and use them to activate your games on their respective platforms.</p>
+                    </div>
+                </div>
+                
+                <div class="next-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>View your order history</h4>
+                        <p>You can always access your purchase history and redemption codes in your profile.</p>
+                    </div>
+                </div>
+                
+                <div class="next-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Need help?</h4>
+                        <p>If you need assistance with your purchase, our support team is available 24/7.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="profile.html" class="btn">View Order History</a>
+                <a href="products.html" class="btn secondary-btn">Continue Shopping</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const keysContainer = document.getElementById('keys-container');
+            const orderIdSpan = document.getElementById('order-id');
+            const orderDateSpan = document.getElementById('order-date');
+            const orderEmailSpan = document.getElementById('order-email');
+            
+            // Get user info
+            const user = JSON.parse(localStorage.getItem('user')) || {};
+            
+            // Set auth link
+            const authLink = document.getElementById('auth-link');
+            if (authLink) {
+                if (user.email) {
+                    authLink.innerHTML = '<a href="profile.html">My Account</a>';
+                } else {
+                    authLink.innerHTML = '<a href="login.html">Login</a>';
+                }
+            }
+            
+            // Check if user is logged in
+            if (!user.email) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Get latest order
+            const latestOrder = JSON.parse(localStorage.getItem('latestOrder')) || [];
+            
+            // Check if there's a latest order
+            if (latestOrder.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            // Set order details
+            const orderDate = new Date(latestOrder[0].purchaseDate || Date.now());
+            const orderId = latestOrder[0].orderId || Date.now();
+            
+            orderIdSpan.textContent = `#${orderId}`;
+            orderDateSpan.textContent = orderDate.toLocaleString();
+            orderEmailSpan.textContent = user.email;
+            
+            // Display game keys
+            latestOrder.forEach(game => {
+                const keyElement = document.createElement('div');
+                keyElement.className = 'game-key';
+                
+                keyElement.innerHTML = `
+                    <div class="game-info">
+                        <img src="${game.image}" alt="${game.title}" onerror="this.src='https://via.placeholder.com/50x50?text=${encodeURIComponent(game.title)}'">
+                        <div>
+                            <h4>${game.title}</h4>
+                            <p class="platform">PC Download</p>
+                        </div>
+                    </div>
+                    <div class="key-container">
+                        <div class="key-code">${game.redeemCode || 'No code available'}</div>
+                        <button class="copy-btn" data-code="${game.redeemCode}">Copy</button>
+                    </div>
+                `;
+                
+                keysContainer.appendChild(keyElement);
+            });
+            
+            // Handle copy buttons
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const code = button.dataset.code;
+                    navigator.clipboard.writeText(code)
+                        .then(() => {
+                            // Show copied notification
+                            button.textContent = 'Copied!';
+                            button.classList.add('copied');
+                            
+                            // Reset after 2 seconds
+                            setTimeout(() => {
+                                button.textContent = 'Copy';
+                                button.classList.remove('copied');
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Could not copy text: ', err);
+                            // Fallback for mobile or browsers without clipboard API
+                            const keyElement = button.previousElementSibling;
+                            const range = document.createRange();
+                            range.selectNode(keyElement);
+                            window.getSelection().removeAllRanges();
+                            window.getSelection().addRange(range);
+                            
+                            try {
+                                document.execCommand('copy');
+                                button.textContent = 'Copied!';
+                                button.classList.add('copied');
+                                
+                                setTimeout(() => {
+                                    button.textContent = 'Copy';
+                                    button.classList.remove('copied');
+                                }, 2000);
+                            } catch (e) {
+                                console.error('Fallback: Could not copy text: ', e);
+                                button.textContent = 'Select manually';
+                            }
+                            
+                            window.getSelection().removeAllRanges();
+                        });
+                });
+            });
+            
+            // Update cart count
+            document.getElementById('cart-total').textContent = '0';
+            
+            // Show empty state if needed
+            function showEmptyState() {
+                const successContainer = document.querySelector('.success-container');
+                successContainer.innerHTML = `
+                    <div class="success-header">
+                        <h2>No Recent Orders</h2>
+                        <p class="success-message">You don't have any recent orders to display.</p>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="products.html" class="btn">Shop Now</a>
+                        <a href="profile.html" class="btn secondary-btn">View Profile</a>
+                    </div>
+                `;
+            }
+            
+            // Set theme
+            const currentMode = localStorage.getItem('theme') || 'dark';
+            document.body.classList.toggle('light-mode', currentMode === 'light');
+            
+            // Handle theme changes
+            document.addEventListener('themeChange', () => {
+                const newMode = localStorage.getItem('theme') || 'dark';
+                document.body.classList.toggle('light-mode', newMode === 'light');
+            });
+            
+            // Clear latest order after displaying
+            // Uncomment this in production to prevent seeing the success page again after refresh
+            // localStorage.removeItem('latestOrder');
+        });
+    </script>
+</body>
+</html>

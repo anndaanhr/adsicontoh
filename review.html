@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZafaGo - Review</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/review.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">ZafaGo</div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Store</a></li>
+            <li><a href="promo.html">Deals</a></li>
+            <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><div id="auth-link"></div></li>
+            <li><button id="mode-toggle" class="mode-toggle">☀️</button></li>
+        </ul>
+    </nav>
+
+    <section class="review-page">
+        <h2>Write a Review</h2>
+        <form id="review-form">
+            <div class="input-group">
+                <label>Game</label>
+                <select id="game-select" required>
+                    <option value="">-- Select a game --</option>
+                    <!-- Options will be dynamically populated -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Rating</label>
+                <div class="rating-stars" id="rating-stars">
+                    <span class="rating-star" data-rating="1">☆</span>
+                    <span class="rating-star" data-rating="2">☆</span>
+                    <span class="rating-star" data-rating="3">☆</span>
+                    <span class="rating-star" data-rating="4">☆</span>
+                    <span class="rating-star" data-rating="5">☆</span>
+                </div>
+                <input type="hidden" id="rating-value" value="0" required>
+            </div>
+            <div class="input-group">
+                <label>Review</label>
+                <textarea id="review-text" required></textarea>
+            </div>
+            <button type="submit" class="btn">Submit Review</button>
+        </form>
+
+        <div class="my-reviews-section">
+            <h3>My Reviews</h3>
+            <div id="my-reviews-container">
+                <!-- User's reviews will be displayed here -->
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </footer>
+
+    <script src="scripts/games.js"></script>
+    <script src="scripts/features.js"></script>
+    <script src="scripts/navbar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user')) || {};
+            const gameSelect = document.getElementById('game-select');
+            const ratingStars = document.querySelectorAll('.rating-star');
+            const ratingValue = document.getElementById('rating-value');
+            const reviewForm = document.getElementById('review-form');
+            const reviewText = document.getElementById('review-text');
+            const myReviewsContainer = document.getElementById('my-reviews-container');
+
+            // Check if user is logged in
+            if (!user.email) {
+                document.querySelector('.review-page').innerHTML = `
+                    <h2>Write a Review</h2>
+                    <div style="text-align: center; padding: 40px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                        <p>Please log in to write a review.</p>
+                        <a href="login.html" class="btn" style="margin-top: 20px;">Login</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Populate games dropdown
+            gameData.forEach(game => {
+                const option = document.createElement('option');
+                option.value = game.id;
+                option.textContent = game.title;
+                gameSelect.appendChild(option);
+            });
+
+            // Rating stars functionality
+            let selectedRating = 0;
+
+            ratingStars.forEach(star => {
+                star.addEventListener('mouseover', () => {
+                    const rating = parseInt(star.dataset.rating);
+                    highlightStars(rating);
+                });
+
+                star.addEventListener('mouseout', () => {
+                    highlightStars(selectedRating);
+                });
+
+                star.addEventListener('click', () => {
+                    selectedRating = parseInt(star.dataset.rating);
+                    ratingValue.value = selectedRating;
+                    highlightStars(selectedRating);
+                });
+            });
+
+            function highlightStars(rating) {
+                ratingStars.forEach(star => {
+                    const starRating = parseInt(star.dataset.rating);
+                    star.textContent = starRating <= rating ? '★' : '☆';
+                    star.classList.toggle('active', starRating <= rating);
+                });
+            }
+
+            // Form submission
+            reviewForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const gameId = parseInt(gameSelect.value);
+                if (!gameId) {
+                    alert('Please select a game');
+                    return;
+                }
+
+                if (selectedRating === 0) {
+                    alert('Please select a rating');
+                    return;
+                }
+
+                const reviewContent = reviewText.value.trim();
+                if (!reviewContent) {
+                    alert('Please write a review');
+                    return;
+                }
+
+                // Get the game info
+                const game = gameData.find(g => g.id === gameId);
+
+                // Initialize reviews if not exists
+                if (!localStorage.getItem('reviews')) {
+                    localStorage.setItem('reviews', JSON.stringify({}));
+                }
+
+                const allReviews = JSON.parse(localStorage.getItem('reviews'));
+
+                // Create new review object
+                const newReview = {
+                    userId: user.email,
+                    userName: user.name || user.email.split('@')[0],
+                    rating: selectedRating,
+                    text: reviewContent,
+                    date: new Date().toISOString()
+                };
+
+                // Add to local storage
+                if (!allReviews[gameId]) {
+                    allReviews[gameId] = [];
+                }
+
+                // Check if user already reviewed this game
+                const existingReviewIndex = allReviews[gameId].findIndex(r => r.userId === user.email);
+
+                if (existingReviewIndex !== -1) {
+                    // Update existing review
+                    allReviews[gameId][existingReviewIndex] = newReview;
+                } else {
+                    // Add new review
+                    allReviews[gameId].push(newReview);
+                }
+
+                localStorage.setItem('reviews', JSON.stringify(allReviews));
+
+                // Reset form
+                gameSelect.value = '';
+                selectedRating = 0;
+                ratingValue.value = 0;
+                highlightStars(0);
+                reviewText.value = '';
+
+                alert(`Your review for ${game.title} has been submitted!`);
+
+                // Refresh the user's reviews
+                displayUserReviews();
+            });
+
+            // Display user's reviews
+            function displayUserReviews() {
+                myReviewsContainer.innerHTML = '';
+
+                // Get all reviews
+                const allReviews = JSON.parse(localStorage.getItem('reviews')) || {};
+                let userReviews = [];
+
+                // Collect all reviews by this user
+                Object.entries(allReviews).forEach(([gameId, reviews]) => {
+                    const userReview = reviews.find(r => r.userId === user.email);
+                    if (userReview) {
+                        const game = gameData.find(g => g.id == gameId);
+                        userReviews.push({
+                            ...userReview,
+                            gameId: parseInt(gameId),
+                            gameTitle: game ? game.title : 'Unknown Game'
+                        });
+                    }
+                });
+
+                // Sort by newest first
+                userReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                if (userReviews.length === 0) {
+                    myReviewsContainer.innerHTML = '<p style="text-align: center; color: #888;">You haven\'t written any reviews yet.</p>';
+                    return;
+                }
+
+                // Create a review element for each review
+                userReviews.forEach(review => {
+                    const reviewDate = new Date(review.date);
+                    const formattedDate = reviewDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+
+                    const reviewItem = document.createElement('div');
+                    reviewItem.className = 'review-item';
+                    reviewItem.innerHTML = `
+                        <div class="review-header">
+                            <a href="product-detail.html?id=${review.gameId}" class="review-game">${review.gameTitle}</a>
+                            <span class="review-date">${formattedDate}</span>
+                        </div>
+                        <div class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                        <div class="review-text">${review.text}</div>
+                        <div class="review-actions">
+                            <button class="btn edit-review-btn" data-game-id="${review.gameId}">Edit</button>
+                            <button class="btn delete-review-btn" data-game-id="${review.gameId}">Delete</button>
+                        </div>
+                    `;
+
+                    myReviewsContainer.appendChild(reviewItem);
+                });
+
+                // Add event listeners for edit and delete buttons
+                document.querySelectorAll('.edit-review-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const gameId = parseInt(btn.dataset.gameId);
+                        editReview(gameId);
+                    });
+                });
+
+                document.querySelectorAll('.delete-review-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const gameId = parseInt(btn.dataset.gameId);
+                        deleteReview(gameId);
+                    });
+                });
+            }
+
+            // Edit review
+            function editReview(gameId) {
+                const allReviews = JSON.parse(localStorage.getItem('reviews'));
+                const gameReviews = allReviews[gameId] || [];
+                const userReview = gameReviews.find(r => r.userId === user.email);
+
+                if (!userReview) return;
+
+                // Fill the form with the review data
+                gameSelect.value = gameId;
+                selectedRating = userReview.rating;
+                ratingValue.value = selectedRating;
+                highlightStars(selectedRating);
+                reviewText.value = userReview.text;
+
+                // Scroll to form
+                reviewForm.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Delete review
+            function deleteReview(gameId) {
+                if (!confirm('Are you sure you want to delete this review?')) return;
+
+                const allReviews = JSON.parse(localStorage.getItem('reviews'));
+                const gameReviews = allReviews[gameId] || [];
+
+                // Remove the user's review
+                const updatedReviews = gameReviews.filter(r => r.userId !== user.email);
+
+                // Update storage
+                if (updatedReviews.length === 0) {
+                    delete allReviews[gameId];
+                } else {
+                    allReviews[gameId] = updatedReviews;
+                }
+
+                localStorage.setItem('reviews', JSON.stringify(allReviews));
+
+                // Refresh the user's reviews
+                displayUserReviews();
+
+                alert('Review deleted successfully!');
+            }
+
+            // Initialize page
+            displayUserReviews();
+        });
+    </script>
+</body>
+</html>

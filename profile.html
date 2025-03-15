@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZafaGo - My Profile</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/profile.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">ZafaGo</div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Store</a></li>
+            <li><a href="promo.html">Deals</a></li>
+            <li><a href="cart.html">Cart <span id="cart-total">0</span></a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><div id="auth-link"></div></li>
+        </ul>
+    </nav>
+
+    <section class="profile-container">
+        <h2>My Account</h2>
+        
+        <div class="profile-content">
+            <div class="sidebar">
+                <div class="profile-summary">
+                    <div class="profile-avatar">
+                        <span id="profile-initial">?</span>
+                    </div>
+                    <div class="profile-info">
+                        <h3 id="profile-name">Guest</h3>
+                        <p id="profile-email">No Email</p>
+                    </div>
+                </div>
+                
+                <ul class="profile-nav">
+                    <li class="active" data-tab="orders">Order History</li>
+                    <li data-tab="wishlist">My Wishlist</li>
+                    <li data-tab="settings">Account Settings</li>
+                </ul>
+                
+                <button id="logout-btn" class="btn logout-btn">Log Out</button>
+            </div>
+            
+            <div class="profile-main">
+                <!-- Order History Tab -->
+                <div class="profile-tab active" id="orders-tab">
+                    <h3>Your Orders</h3>
+                    
+                    <div class="orders-list" id="orders-list">
+                        <div class="empty-state" id="empty-orders">
+                            <img src="assets/empty-orders.png" alt="No Orders" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2118/2118197.png'">
+                            <h4>No Orders Yet</h4>
+                            <p>Looks like you haven't made any purchases yet.</p>
+                            <a href="products.html" class="btn">Browse Games</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wishlist Tab -->
+                <div class="profile-tab" id="wishlist-tab">
+                    <h3>Your Wishlist</h3>
+                    
+                    <div class="wishlist-grid" id="wishlist-grid">
+                        <div class="empty-state" id="empty-wishlist">
+                            <img src="assets/empty-wishlist.png" alt="Empty Wishlist" onerror="this.src='https://cdn-icons-png.flaticon.com/512/861/861155.png'">
+                            <h4>Your Wishlist is Empty</h4>
+                            <p>Save items to your wishlist to purchase them later.</p>
+                            <a href="products.html" class="btn">Discover Games</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Settings Tab -->
+                <div class="profile-tab" id="settings-tab">
+                    <h3>Account Settings</h3>
+                    
+                    <form id="settings-form">
+                        <div class="form-group">
+                            <label for="settings-name">Display Name</label>
+                            <input type="text" id="settings-name" placeholder="Enter your name">
+                            <span class="form-validation" id="name-validation"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="settings-email">Email Address</label>
+                            <input type="email" id="settings-email" readonly>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="settings-password">New Password</label>
+                                <input type="password" id="settings-password" placeholder="Leave blank to keep current">
+                                <span class="form-validation" id="password-validation"></span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="settings-confirm">Confirm Password</label>
+                                <input type="password" id="settings-confirm" placeholder="Confirm new password">
+                                <span class="form-validation" id="confirm-validation"></span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn save-btn">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Redeem Code Modal -->
+    <div class="redeem-modal" id="redeem-modal">
+        <div class="redeem-modal-content">
+            <div class="modal-header">
+                <h3>Game Activation Key</h3>
+                <button class="close-modal" id="close-modal">×</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="game-info-modal" id="modal-game-info">
+                    <!-- Game info will be loaded here -->
+                </div>
+                
+                <div class="redeem-code-container">
+                    <h4>Your Activation Code</h4>
+                    <div class="redeem-code" id="modal-redeem-code"></div>
+                    <button class="btn copy-code-btn" id="copy-code-btn">Copy Code</button>
+                </div>
+                
+                <div class="redeem-instructions">
+                    <h4>How to Redeem</h4>
+                    <ol>
+                        <li>Copy your activation code</li>
+                        <li>Launch the game platform</li>
+                        <li>Go to "Activate Product" or "Redeem Code"</li>
+                        <li>Paste your code and follow the instructions</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2025 ZafaGo. Crafted with Passion.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const profileInitial = document.getElementById('profile-initial');
+            const profileName = document.getElementById('profile-name');
+            const profileEmail = document.getElementById('profile-email');
+            const logoutBtn = document.getElementById('logout-btn');
+            const ordersList = document.getElementById('orders-list');
+            const emptyOrders = document.getElementById('empty-orders');
+            const wishlistGrid = document.getElementById('wishlist-grid');
+            const emptyWishlist = document.getElementById('empty-wishlist');
+            const settingsForm = document.getElementById('settings-form');
+            const settingsName = document.getElementById('settings-name');
+            const settingsEmail = document.getElementById('settings-email');
+            const settingsPassword = document.getElementById('settings-password');
+            const settingsConfirm = document.getElementById('settings-confirm');
+            const redeemModal = document.getElementById('redeem-modal');
+            const modalGameInfo = document.getElementById('modal-game-info');
+            const modalRedeemCode = document.getElementById('modal-redeem-code');
+            const copyCodeBtn = document.getElementById('copy-code-btn');
+            const closeModal = document.getElementById('close-modal');
+            const tabButtons = document.querySelectorAll('.profile-nav li');
+            const tabContents = document.querySelectorAll('.profile-tab');
+            
+            // Get user information
+            const user = JSON.parse(localStorage.getItem('user')) || {};
+            
+            // Set auth link
+            const authLink = document.getElementById('auth-link');
+            if (authLink) {
+                if (user.email) {
+                    authLink.innerHTML = '<a href="profile.html">My Account</a>';
+                } else {
+                    authLink.innerHTML = '<a href="login.html">Login</a>';
+                }
+            }
+            
+            // Redirect if not logged in
+            if (!user.email) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Fill user information
+            profileName.textContent = user.name || user.email.split('@')[0];
+            profileEmail.textContent = user.email;
+            profileInitial.textContent = (user.name || user.email)[0].toUpperCase();
+            
+            // Fill form fields
+            settingsName.value = user.name || '';
+            settingsEmail.value = user.email;
+            
+            // Tab navigation
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and tabs
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(tab => tab.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    // Show corresponding tab
+                    const tabId = button.dataset.tab;
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Load order history
+            const ordersKey = `orders_${user.email}`;
+            const orders = JSON.parse(localStorage.getItem(ordersKey)) || [];
+            
+            if (orders.length > 0) {
+                emptyOrders.style.display = 'none';
+                
+                orders.forEach(order => {
+                    const orderElement = document.createElement('div');
+                    orderElement.className = 'order-item';
+                    
+                    const orderDate = new Date(order.date).toLocaleDateString();
+                    const orderTime = new Date(order.date).toLocaleTimeString();
+                    
+                    orderElement.innerHTML = `
+                        <div class="order-header">
+                            <div>
+                                <h4>Order #${order.id}</h4>
+                                <p class="order-date">${orderDate} at ${orderTime}</p>
+                            </div>
+                            <div class="order-total">$${order.total?.toFixed(2) || '0.00'}</div>
+                        </div>
+                        <div class="order-products">
+                            ${order.items.map(item => `
+                                <div class="order-product">
+                                    <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/50x50?text=${encodeURIComponent(item.title)}'">
+                                    <div class="product-info">
+                                        <h5>${item.title}</h5>
+                                        <button class="show-key-btn" data-code="${item.redeemCode || ''}" data-game='${JSON.stringify(item)}'>
+                                            View Key
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    ordersList.appendChild(orderElement);
+                });
+            }
+            
+            // Load wishlist
+            const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+            
+            if (wishlist.length > 0) {
+                emptyWishlist.style.display = 'none';
+                
+                wishlist.forEach(game => {
+                    const finalPrice = game.discount > 0 
+                        ? (game.price * (1 - game.discount / 100)).toFixed(2) 
+                        : game.price.toFixed(2);
+                    
+                    const wishlistItem = document.createElement('div');
+                    wishlistItem.className = 'wishlist-item';
+                    
+                    wishlistItem.innerHTML = `
+                        <div class="wishlist-image">
+                            <img src="${game.image}" alt="${game.title}" onerror="this.src='https://via.placeholder.com/120x120?text=${encodeURIComponent(game.title)}'">
+                        </div>
+                        <div class="wishlist-info">
+                            <h4>${game.title}</h4>
+                            <div class="price-info">
+                                ${game.discount > 0 ? 
+                                `<span class="discount-badge">-${game.discount}%</span>
+                                <span class="original-price">$${game.price.toFixed(2)}</span>` : ''}
+                                <span class="final-price">$${finalPrice}</span>
+                            </div>
+                            <div class="wishlist-actions">
+                                <button class="btn add-to-cart-from-wishlist" data-id="${game.id}">Add to Cart</button>
+                                <button class="btn remove-from-wishlist" data-id="${game.id}">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    wishlistGrid.appendChild(wishlistItem);
+                });
+            }
+            
+            // Handle redeem code modal
+            ordersList.addEventListener('click', e => {
+                if (e.target.classList.contains('show-key-btn')) {
+                    const code = e.target.dataset.code;
+                    const game = JSON.parse(e.target.dataset.game);
+                    
+                    // Fill modal with game info
+                    modalGameInfo.innerHTML = `
+                        <img src="${game.image}" alt="${game.title}" onerror="this.src='https://via.placeholder.com/80x80?text=${encodeURIComponent(game.title)}'">
+                        <div>
+                            <h4>${game.title}</h4>
+                            <p>PC Digital Download</p>
+                        </div>
+                    `;
+                    
+                    // Set redeem code
+                    modalRedeemCode.textContent = code || 'No code available';
+                    
+                    // Show modal
+                    redeemModal.style.display = 'flex';
+                }
+            });
+            
+            // Copy redeem code
+            copyCodeBtn.addEventListener('click', () => {
+                const code = modalRedeemCode.textContent;
+                navigator.clipboard.writeText(code)
+                    .then(() => {
+                        copyCodeBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyCodeBtn.textContent = 'Copy Code';
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Could not copy text: ', err);
+                        alert('Please copy the code manually');
+                    });
+            });
+            
+            // Close modal
+            closeModal.addEventListener('click', () => {
+                redeemModal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            redeemModal.addEventListener('click', e => {
+                if (e.target === redeemModal) {
+                    redeemModal.style.display = 'none';
+                }
+            });
+            
+            // Handle wishlist actions
+            wishlistGrid.addEventListener('click', e => {
+                // Remove from wishlist
+                if (e.target.classList.contains('remove-from-wishlist')) {
+                    const gameId = parseInt(e.target.dataset.id);
+                    const newWishlist = wishlist.filter(game => game.id !== gameId);
+                    
+                    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+                    
+                    // Remove from UI with animation
+                    const item = e.target.closest('.wishlist-item');
+                    item.classList.add('removing');
+                    
+                    setTimeout(() => {
+                        item.remove();
+                        
+                        // Show empty state if no items left
+                        if (newWishlist.length === 0) {
+                            emptyWishlist.style.display = 'flex';
+                        }
+                    }, 300);
+                }
+                
+                // Add to cart from wishlist
+                if (e.target.classList.contains('add-to-cart-from-wishlist')) {
+                    const gameId = parseInt(e.target.dataset.id);
+                    const game = wishlist.find(game => game.id === gameId);
+                    
+                    if (game) {
+                        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                        cartItems.push(game);
+                        localStorage.setItem('cart', JSON.stringify(cartItems));
+                        
+                        // Update cart count
+                        document.getElementById('cart-total').textContent = cartItems.length;
+                        
+                        // Show added feedback
+                        e.target.textContent = 'Added to Cart!';
+                        e.target.disabled = true;
+                        
+                        setTimeout(() => {
+                            e.target.textContent = 'Add to Cart';
+                            e.target.disabled = false;
+                        }, 2000);
+                    }
+                }
+            });
+            
+            // Handle account settings form
+            settingsForm.addEventListener('submit', e => {
+                e.preventDefault();
+                
+                const name = settingsName.value.trim();
+                const password = settingsPassword.value;
+                const confirmPassword = settingsConfirm.value;
+                
+                // Name validation
+                if (name.length < 3 && name.length > 0) {
+                    document.getElementById('name-validation').textContent = 'Name must be at least 3 characters';
+                    document.getElementById('name-validation').className = 'form-validation error';
+                    return;
+                }
+                
+                // Password validation
+                if (password && password.length < 8) {
+                    document.getElementById('password-validation').textContent = 'Password must be at least 8 characters';
+                    document.getElementById('password-validation').className = 'form-validation error';
+                    return;
+                }
+                
+                // Confirm password
+                if (password && password !== confirmPassword) {
+                    document.getElementById('confirm-validation').textContent = 'Passwords do not match';
+                    document.getElementById('confirm-validation').className = 'form-validation error';
+                    return;
+                }
+                
+                // Update user information
+                const users = JSON.parse(localStorage.getItem('users')) || {};
+                
+                if (users[user.email]) {
+                    if (name) users[user.email].name = name;
+                    if (password) users[user.email].password = password;
+                    
+                    localStorage.setItem('users', JSON.stringify(users));
+                }
+                
+                // Update user in session
+                const updatedUser = {
+                    ...user,
+                    name: name || user.name
+                };
+                
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+                
+                // Update UI
+                profileName.textContent = updatedUser.name || updatedUser.email.split('@')[0];
+                profileInitial.textContent = (updatedUser.name || updatedUser.email)[0].toUpperCase();
+                
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'form-success';
+                successMsg.textContent = 'Your changes have been saved!';
+                
+                settingsForm.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 3000);
+                
+                // Clear password fields
+                settingsPassword.value = '';
+                settingsConfirm.value = '';
+            });
+            
+            // Handle logout
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            });
+            
+            // Update cart count
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            document.getElementById('cart-total').textContent = cartItems.length;
+            
+            // Set theme
+            const currentMode = localStorage.getItem('theme') || 'dark';
+            document.body.classList.toggle('light-mode', currentMode === 'light');
+            
+            // Handle theme changes
+            document.addEventListener('themeChange', () => {
+                const newMode = localStorage.getItem('theme') || 'dark';
+                document.body.classList.toggle('light-mode', newMode === 'light');
+            });
+        });
+    </script>
+</body>
+</html>
