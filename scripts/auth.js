@@ -1,12 +1,278 @@
+/**
+ * Zafago Authentication System
+ * Handles user registration, login, and session management
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-    const profileCard = document.querySelector('.profile-card');
-    const orderHistory = document.querySelector('.order-history ul');
-    const cartTotal = document.getElementById('cart-total');
+  // Cache DOM elements for better performance
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const logoutButtons = document.querySelectorAll('.logout-btn, #logout-link');
+  const messageElements = document.querySelectorAll('.message');
   
-    let users = JSON.parse(localStorage.getItem('users')) || [];
+  // Initialize auth state
+  initAuthState();
   
+  // Setup login form
+  if (loginForm) {
+    setupLoginForm();
+  }
+  
+  // Setup register form
+  if (registerForm) {
+    setupRegisterForm();
+  }
+  
+  // Setup logout buttons
+  if (logoutButtons.length > 0) {
+    setupLogoutButtons();
+  }
+  
+  // Public API
+  window.zafagoAuth = {
+    isLoggedIn,
+    getCurrentUser,
+    logout,
+    updateUser
+  };
+  
+  /**
+   * Form setup functions
+   */
+  
+  // Setup login form handlers
+  function setupLoginForm() {
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('toggle-password');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    
+    // Toggle password visibility
+    if (togglePassword) {
+      togglePassword.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          togglePassword.textContent = '👁️‍🗨️';
+        } else {
+          passwordInput.type = 'password';
+          togglePassword.textContent = '👁️';
+        }
+      });
+    }
+    
+    // Handle form submission
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Get input values
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      
+      // Basic validation
+      if (!email || !password) {
+        showMessage('Please fill in all fields', 'error');
+        return;
+      }
+      
+      // Email validation
+      if (!isValidEmail(email)) {
+        showMessage('Please enter a valid email address', 'error');
+        return;
+      }
+      
+      // Show loading state
+      if (loadingSpinner) {
+        loadingSpinner.style.display = 'flex';
+      }
+      
+      // Login process with artificial delay for UX
+      setTimeout(() => {
+        const success = loginUser(email, password);
+        
+        // Hide loading state
+        if (loadingSpinner) {
+          loadingSpinner.style.display = 'none';
+        }
+        
+        if (success) {
+          // Check for redirect
+          const params = new URLSearchParams(window.location.search);
+          const redirect = params.get('redirect');
+          
+          if (redirect) {
+            window.location.href = `${redirect}.html`;
+          } else {
+            window.location.href = 'index.html';
+          }
+        }
+      }, 1000);
+    });
+  }
+  
+  // Setup register form handlers
+  function setupRegisterForm() {
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('toggle-password');
+    const strengthIndicator = document.getElementById('strength-indicator');
+    const strengthText = document.getElementById('strength-text');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    
+    // Toggle password visibility
+    if (togglePassword) {
+      togglePassword.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          togglePassword.textContent = '👁️‍🗨️';
+        } else {
+          passwordInput.type = 'password';
+          togglePassword.textContent = '👁️';
+        }
+      });
+    }
+    
+    // Real-time password strength
+    if (passwordInput && strengthIndicator && strengthText) {
+      passwordInput.addEventListener('input', () => {
+        const password = passwordInput.value;
+        const { strength, feedback } = checkPasswordStrength(password);
+        
+        // Update indicator
+        strengthIndicator.style.width = `${strength}%`;
+        
+        if (strength <= 25) {
+          strengthIndicator.style.backgroundColor = '#ff4040';
+          strengthText.textContent = feedback || 'Weak password';
+        } else if (strength <= 50) {
+          strengthIndicator.style.backgroundColor = '#ffaa00';
+          strengthText.textContent = feedback || 'Moderate password';
+        } else if (strength <= 75) {
+          strengthIndicator.style.backgroundColor = '#aaff00';
+          strengthText.textContent = feedback || 'Good password';
+        } else {
+          strengthIndicator.style.backgroundColor = '#00cc66';
+          strengthText.textContent = feedback || 'Strong password';
+        }
+      });
+    }
+    
+    // Handle form submission
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Get input values
+      const name = nameInput ? nameInput.value.trim() : '';
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      
+      // Basic validation
+      if (!email || !password) {
+        showMessage('Please fill in all fields', 'error');
+        return;
+      }
+      
+      // Email validation
+      if (!isValidEmail(email)) {
+        showMessage('Please enter a valid email address', 'error');
+        return;
+      }
+      
+      // Password strength validation
+      const { strength } = checkPasswordStrength(password);
+      if (strength < 50) {
+        showMessage('Please choose a stronger password', 'error');
+        return;
+      }
+      
+      // Show loading state
+      if (loadingSpinner) {
+        loadingSpinner.style.display = 'flex';
+      }
+      
+      // Registration process with artificial delay for UX
+      setTimeout(() => {
+        const success = registerUser(email, password, name);
+        
+        // Hide loading state
+        if (loadingSpinner) {
+          loadingSpinner.style.display = 'none';
+        }
+        
+        if (success) {
+          showMessage('Registration successful! Redirecting to login...', 'success');
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1500);
+        }
+      }, 1000);
+    });
+  }
+  
+  // Setup logout buttons
+  function setupLogoutButtons() {
+    logoutButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        logout();
+        
+        // Use toast for notification
+        if (window.zafagoUtils && window.zafagoUtils.showToast) {
+          window.zafagoUtils.showToast('You have been logged out successfully', 'success');
+        }
+        
+        // Redirect to home if not already there
+        if (window.location.pathname !== '/' && window.location.pathname !== '/index.html') {
+          window.location.href = 'index.html';
+        } else {
+          // Just reload if already on home page
+          updateAuthDisplay();
+        }
+      });
+    });
+  }
+  
+  /**
+   * Auth helper functions
+   */
+  
+  // Initialize auth state on page load
+  function initAuthState() {
+    // Handle session expiration
+    const user = getCurrentUser();
+    if (user && user.expiry && new Date(user.expiry) < new Date()) {
+      // Session expired, log out
+      logout();
+      
+      // Show message if on login page
+      if (window.location.pathname.includes('login')) {
+        showMessage('Your session has expired. Please log in again.', 'info');
+      } else if (window.zafagoUtils && window.zafagoUtils.showToast) {
+        // Show toast on other pages
+        window.zafagoUtils.showToast('Your session has expired. Please log in again.', 'info');
+      }
+    }
+    
+    // Update auth display
+    updateAuthDisplay();
+    
+    // Force login for protected pages
+    const protectedPages = ['profile.html', 'checkout.html'];
+    const currentPage = window.location.pathname.split('/').pop();
+    
+    if (protectedPages.includes(currentPage) && !isLoggedIn()) {
+      window.location.href = `login.html?redirect=${currentPage.split('.')[0]}`;
+    }
+  }
+  
+  // Check if email is valid
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return false;
+    }
+    
+    // Optionally validate domain
     const validDomains = [
       'gmail.com',
       'yahoo.com',
@@ -17,147 +283,208 @@ document.addEventListener('DOMContentLoaded', () => {
       'protonmail.com',
       'mail.com',
     ];
-  
-
-    function isValidEmail(email) {
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return false;
-      }
-  
-      const domain = email.split('@')[1].toLowerCase();
-      return validDomains.includes(domain);
+    
+    // Skip domain validation in development for testing
+    if (window.location.hostname === 'localhost') {
+      return true;
     }
+    
+    const domain = email.split('@')[1].toLowerCase();
+    return validDomains.includes(domain);
+  }
   
-    function saveUsers() {
-      localStorage.setItem('users', JSON.stringify(users));
+  // Check password strength
+  function checkPasswordStrength(password) {
+    let strength = 0;
+    let feedback = '';
+    
+    // No password
+    if (!password) {
+      return { strength: 0, feedback: 'Enter a password' };
     }
+    
+    // Length check
+    if (password.length < 6) {
+      return { 
+        strength: 10, 
+        feedback: 'Password too short (min 6 characters)' 
+      };
+    }
+    
+    // Base strength from length (max 40%)
+    strength += Math.min(40, password.length * 4);
+    
+    // Character variety checks
+    if (/[A-Z]/.test(password)) strength += 15;
+    if (/[a-z]/.test(password)) strength += 10;
+    if (/[0-9]/.test(password)) strength += 15;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+    
+    // Cap at 100%
+    strength = Math.min(100, strength);
+    
+    // Feedback based on strength
+    if (strength < 40) {
+      feedback = 'Weak - Add numbers and special characters';
+    } else if (strength < 70) {
+      feedback = 'Medium - Add special characters';
+    } else if (strength < 90) {
+      feedback = 'Good - Consider a longer password';
+    } else {
+      feedback = 'Strong password';
+    }
+    
+    return { strength, feedback };
+  }
   
-    if (registerForm) {
-      registerForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = registerForm.querySelector('input[type="text"]').value;
-        const email = registerForm.querySelector('input[type="email"]').value;
-        const password = registerForm.querySelector('input[type="password"]').value;
-  
-        if (!name || !email || !password) {
-          alert('Please fill in all fields');
-          return;
-        }
-        if (!isValidEmail(email)) {
-          alert('Please use a valid email address (e.g., @gmail.com, @yahoo.com)');
-          return;
-        }
-        if (password.length < 8) {
-          alert('Password must be at least 8 characters');
-          return;
-        }
-  
-        if (users.some(user => user.email === email)) {
-          alert('Email already registered');
-          return;
-        }
-  
-        const newUser = { name, email, password };
-        users.push(newUser);
-        saveUsers();
-  
-        localStorage.setItem('user', JSON.stringify(newUser));
-        alert('Registration successful! Please log in.');
-        window.location.href = 'login.html';
+  // Update auth display based on login state
+  function updateAuthDisplay() {
+    const authLink = document.getElementById('auth-link');
+    const profileLinks = document.querySelectorAll('.menu a[href="profile.html"]');
+    
+    if (!authLink) return;
+    
+    const isUserLoggedIn = isLoggedIn();
+    const user = getCurrentUser();
+    
+    // Update auth link
+    if (isUserLoggedIn) {
+      authLink.innerHTML = '<a href="profile.html">My Account</a>';
+      
+      // Show profile links
+      profileLinks.forEach(link => {
+        const parentLi = link.closest('li');
+        if (parentLi) parentLi.style.display = 'list-item';
+      });
+    } else {
+      authLink.innerHTML = '<a href="login.html">Login</a>';
+      
+      // Hide profile links
+      profileLinks.forEach(link => {
+        const parentLi = link.closest('li');
+        if (parentLi) parentLi.style.display = 'none';
       });
     }
+    
+    // Dispatch auth change event for components that depend on auth state
+    document.dispatchEvent(new Event('authChange'));
+  }
   
-    if (loginForm) {
-      loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = loginForm.querySelector('input[type="email"]').value;
-        const password = loginForm.querySelector('input[type="password"]').value;
-  
-        if (!isValidEmail(email)) {
-          alert('Please use a valid email address (e.g., @gmail.com, @yahoo.com)');
-          return;
-        }
-  
-        const user = users.find(user => user.email === email);
-  
-        if (!user) {
-          alert('Email not found');
-          return;
-        }
-  
-        if (user.password !== password) {
-          alert('Incorrect password');
-          return;
-        }
-  
-        localStorage.setItem('user', JSON.stringify({ name: user.name, email: user.email }));
-        window.location.href = 'profile.html';
-      });
+  // Show message in message container
+  function showMessage(text, type = 'info') {
+    messageElements.forEach(msgEl => {
+      msgEl.textContent = text;
+      msgEl.className = `message ${type}`;
+    });
+    
+    // Fallback to toast notification
+    if (messageElements.length === 0 && window.zafagoUtils && window.zafagoUtils.showToast) {
+      window.zafagoUtils.showToast(text, type);
     }
+  }
   
-    if (profileCard) {
-      const user = JSON.parse(localStorage.getItem('user')) || {};
+  /**
+   * Auth core functions
+   */
   
-      if (!user.email) {
-        window.location.href = 'login.html';
-        return;
-      }
+  // Check if user is logged in
+  function isLoggedIn() {
+    const user = JSON.parse(localStorage.getItem('user')) || {};
+    return !!user.email;
+  }
   
-      profileCard.innerHTML = `
-        <h3>${user.name || 'Guest'}</h3>
-        <p class="email">${user.email}</p>
-        <button id="logout">Logout</button>
-      `;
+  // Get current user
+  function getCurrentUser() {
+    return JSON.parse(localStorage.getItem('user')) || {};
+  }
   
-      let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-      if (cartTotal) cartTotal.textContent = cartItems.length;
-  
-      const orders = JSON.parse(localStorage.getItem(`orders_${user.email}`)) || [];
-      if (orders.length === 0) {
-        orderHistory.innerHTML = '<li>No orders yet.</li>';
-      } else {
-        orderHistory.innerHTML = orders.map(order => `
-          <li>
-            <div class="game-name">${order.game.title} - $${order.game.price.toFixed(2)}</div>
-            <span class="order-date">${new Date(order.date).toLocaleString()}</span>
-            <button class="redeem-btn" data-order-id="${order.id}">👁️</button>
-          </li>
-        `).join('');
-      }
-  
-      document.getElementById('logout').addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.removeItem('user');
-        window.location.href = 'login.html';
-      });
-  
-      document.querySelectorAll('.redeem-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-          const orderId = e.target.dataset.orderId;
-          const order = orders.find(o => o.id === parseInt(orderId));
-          if (order && !order.redeemed) {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let code = '';
-            for (let i = 0; i < 20; i++) {
-              if (i === 4 || i === 9 || i === 14) {
-                code += '-';
-              } else {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-              }
-            }
-            order.redeemed = true;
-            order.redeemCode = code;
-            localStorage.setItem(`orders_${user.email}`, JSON.stringify(orders));
-  
-            const li = e.target.parentElement;
-            li.innerHTML += `
-              <div class="redeem-code">${code}</div>
-            `;
-            e.target.disabled = true;
-          }
-        });
-      });
+  // Register new user
+  function registerUser(email, password, name = '') {
+    // Get existing users
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    
+    // Check if email already exists
+    if (users[email]) {
+      showMessage('Email already registered', 'error');
+      return false;
     }
-  });
+    
+    // Add new user
+    users[email] = {
+      email,
+      password, // In a real app, password would be hashed
+      name: name || email.split('@')[0],
+      created: new Date().toISOString()
+    };
+    
+    // Save to localStorage
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    return true;
+  }
+  
+  // Login user
+  function loginUser(email, password) {
+    // Get users
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    
+    // Check if user exists
+    if (!users[email]) {
+      showMessage('Email not found', 'error');
+      return false;
+    }
+    
+    // Check password
+    if (users[email].password !== password) {
+      showMessage('Incorrect password', 'error');
+      return false;
+    }
+    
+    // Set session expiry (24 hours)
+    const expiry = new Date();
+    expiry.setHours(expiry.getHours() + 24);
+    
+    // Set user in localStorage
+    const user = {
+      email,
+      name: users[email].name,
+      expiry: expiry.toISOString()
+    };
+    
+    localStorage.setItem('user', JSON.stringify(user));
+    
+    // Update auth display
+    updateAuthDisplay();
+    
+    return true;
+  }
+  
+  // Update user info
+  function updateUser(updates) {
+    const user = getCurrentUser();
+    if (!user.email) return false;
+    
+    // Get all users
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+    if (!users[user.email]) return false;
+    
+    // Update user properties
+    Object.assign(users[user.email], updates);
+    
+    // Save to localStorage
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // Update current user session
+    Object.assign(user, updates);
+    localStorage.setItem('user', JSON.stringify(user));
+    
+    return true;
+  }
+  
+  // Logout user
+  function logout() {
+    localStorage.removeItem('user');
+    updateAuthDisplay();
+    return true;
+  }
+});
