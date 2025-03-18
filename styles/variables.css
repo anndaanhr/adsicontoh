@@ -1,0 +1,96 @@
+/* Zafago CSS Variables for Consistent Styling */
+
+:root {
+    /* Primary Colors */
+    --primary-color: #ff4081;
+    --secondary-color: #00ccff;
+    --success-color: #4CAF50;
+    --error-color: #ff4040;
+    --warning-color: #ff9800;
+    --info-color: #03A9F4;
+    
+    /* Text Colors */
+    --text-color: #f0f0f0;
+    --text-secondary: #c0c0c0;
+    --text-muted: #888888;
+    
+    /* Background Colors */
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1f1f1f;
+    --bg-tertiary: #2a2a2a;
+    --bg-card: #1f1f1f;
+    
+    /* Spacing Variables */
+    --space-xs: 5px;
+    --space-sm: 10px;
+    --space-md: 15px;
+    --space-lg: 20px;
+    --space-xl: 30px;
+    --space-xxl: 50px;
+    
+    /* Border Radius */
+    --radius-sm: 5px;
+    --radius-md: 10px;
+    --radius-lg: 15px;
+    --radius-xl: 25px;
+    --radius-circle: 50%;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+    --shadow-inner: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    
+    /* Z-Index Layers */
+    --z-index-dropdown: 100;
+    --z-index-sticky: 200;
+    --z-index-fixed: 300;
+    --z-index-modal: 400;
+    --z-index-popover: 500;
+    --z-index-toast: 1000;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* Fonts */
+    --font-headings: 'Orbitron', sans-serif;
+    --font-body: 'Poppins', sans-serif;
+    
+    /* Font Sizes */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 24px;
+    --font-size-xxl: 32px;
+    --font-size-huge: 50px;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(60deg, #00ccff, #ff4081);
+    --gradient-dark: linear-gradient(180deg, #1a1a1a, #0f0f0f);
+    --gradient-button: linear-gradient(180deg, rgba(0, 204, 255, 0.3), rgba(255, 64, 129, 0.3));
+  }
+  
+  /* Light Mode Variables */
+  body.light-mode {
+    /* Text Colors */
+    --text-color: #333333;
+    --text-secondary: #666666;
+    --text-muted: #777777;
+    
+    /* Background Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f0f0f0;
+    --bg-tertiary: #e0e0e0;
+    --bg-card: #f0f0f0;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+    
+    /* Gradients */
+    --gradient-dark: linear-gradient(180deg, #ffffff, #e0e0e0);
+  }

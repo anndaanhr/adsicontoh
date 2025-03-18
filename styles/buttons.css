@@ -1,65 +1,278 @@
+/* General Button Styles */
 .btn {
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    color: #f0f0f0 !important; 
+    font-family: var(--font-body);
+    font-size: var(--font-size-md);
+    color: var(--text-color) !important; 
     text-decoration: none;
     padding: 12px 30px;
-    border-radius: 25px; 
-    background: #ff4081; 
+    border-radius: var(--radius-xl);
+    background: var(--primary-color);
     border: none;
     cursor: pointer;
-    transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+    transition: background var(--transition-normal), 
+                box-shadow var(--transition-normal), 
+                transform var(--transition-normal),
+                color var(--transition-normal);
     display: inline-block;
     position: relative;
-    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6); 
-}
-
-body.light-mode .btn {
-    color: #333333 !important; 
-    background: #00ccff; 
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6);
+    text-align: center;
+    font-weight: 500;
+    outline: none;
+  }
+  
+  .btn:hover {
+    background: var(--secondary-color);
+    color: white !important;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6);
+    transform: translateY(-2px);
+  }
+  
+  .btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 5px rgba(0, 204, 255, 0.6);
+  }
+  
+  body.light-mode .btn {
+    color: var(--text-color) !important;
+    background: var(--secondary-color); 
     box-shadow: 0 0 10px rgba(0, 204, 255, 0.6); 
-}
-
-.btn:hover {
-    background: #00ccff; 
-    color: #ffffff; 
-    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6); 
-}
-
-body.light-mode .btn:hover {
-    background: #ff4081;
-    color: #333333; 
+  }
+  
+  body.light-mode .btn:hover {
+    background: var(--primary-color);
+    color: var(--text-color) !important;
     box-shadow: 0 0 15px rgba(255, 64, 129, 0.8), 0 0 30px rgba(255, 64, 129, 0.6); 
-}
-
-.small-btn, .add-to-cart-btn {
-    font-size: 16px;
+  }
+  
+  /* Button variants */
+  .btn-sm {
+    font-size: var(--font-size-sm);
     padding: 8px 20px;
-    border-radius: 25px; 
-}
-
-
-.add-to-cart-btn {
-    font-family: 'Poppins', sans-serif;
-    color: #f0f0f0; 
-    background: #ff4081;
-    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6); 
-}
-
-body.light-mode .add-to-cart-btn {
-    color: #333333; 
-    background: #00ccff; 
-    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6); 
-}
-
-.add-to-cart-btn:hover {
-    background: #00ccff; 
-    color: #ffffff; 
-    box-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.6); 
-}
-
-body.light-mode .add-to-cart-btn:hover {
-    background: #ff4081; 
-    color: #333333; 
-    box-shadow: 0 0 15px rgba(255, 64, 129, 0.8), 0 0 30px rgba(255, 64, 129, 0.6); 
-}
+  }
+  
+  .btn-lg {
+    font-size: var(--font-size-lg);
+    padding: 15px 40px;
+  }
+  
+  .btn-primary {
+    background: var(--primary-color);
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.6);
+  }
+  
+  .btn-secondary {
+    background: var(--secondary-color);
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+  }
+  
+  .btn-success {
+    background: var(--success-color);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+  }
+  
+  .btn-warning {
+    background: var(--warning-color);
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+  }
+  
+  .btn-danger {
+    background: var(--error-color);
+    box-shadow: 0 0 10px rgba(255, 64, 64, 0.6);
+  }
+  
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color) !important;
+    box-shadow: none;
+  }
+  
+  .btn-outline:hover {
+    background: var(--primary-color);
+    color: var(--text-color) !important;
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.4);
+  }
+  
+  body.light-mode .btn-outline {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color) !important;
+  }
+  
+  body.light-mode .btn-outline:hover {
+    background: var(--secondary-color);
+    color: white !important;
+  }
+  
+  /* Glow effect */
+  .btn-glow {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-glow::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 60%);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    pointer-events: none;
+  }
+  
+  .btn-glow:hover::after {
+    opacity: 1;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    50% { transform: scale(1.2); opacity: 0.4; }
+    100% { transform: scale(0.8); opacity: 0.8; }
+  }
+  
+  /* Special Buttons */
+  .add-to-cart-btn, .details-btn {
+    font-family: var(--font-body);
+    font-size: var(--font-size-sm);
+    padding: 8px 15px;
+    border-radius: var(--radius-xl);
+    transition: all var(--transition-normal);
+  }
+  
+  .add-to-cart-btn {
+    background: var(--primary-color);
+    color: var(--text-color);
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.4);
+  }
+  
+  .add-to-cart-btn:hover {
+    background: var(--secondary-color);
+    color: white;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.6);
+    transform: translateY(-2px);
+  }
+  
+  .details-btn {
+    background: var(--secondary-color);
+    color: var(--text-color);
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.4);
+  }
+  
+  .details-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 64, 129, 0.6);
+    transform: translateY(-2px);
+  }
+  
+  body.light-mode .add-to-cart-btn {
+    background: var(--secondary-color);
+    color: var(--text-color);
+  }
+  
+  body.light-mode .add-to-cart-btn:hover {
+    background: var(--primary-color);
+    color: white;
+  }
+  
+  body.light-mode .details-btn {
+    background: var(--primary-color);
+    color: var(--text-color);
+  }
+  
+  body.light-mode .details-btn:hover {
+    background: var(--secondary-color);
+    color: white;
+  }
+  
+  /* Cart and Wishlist Buttons */
+  .add-to-wishlist-btn {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 4px 8px;
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+  }
+  
+  .add-to-wishlist-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
+  }
+  
+  .add-to-wishlist-btn.active {
+    background: var(--primary-color);
+    color: white;
+  }
+  
+  body.light-mode .add-to-wishlist-btn {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+  }
+  
+  body.light-mode .add-to-wishlist-btn:hover, 
+  body.light-mode .add-to-wishlist-btn.active {
+    background: var(--secondary-color);
+    color: white;
+  }
+  
+  /* Icon in buttons */
+  .btn .icon-bounce {
+    display: inline-block;
+    animation: iconBounce 0.6s ease;
+  }
+  
+  @keyframes iconBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+  }
+  
+  /* Disabled state */
+  .btn:disabled, 
+  .btn.disabled {
+    background: #666;
+    color: #aaa !important;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    opacity: 0.7;
+  }
+  
+  body.light-mode .btn:disabled,
+  body.light-mode .btn.disabled {
+    background: #ccc;
+    color: #666 !important;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .btn {
+      padding: 10px 25px;
+      font-size: var(--font-size-sm);
+    }
+    
+    .btn-lg {
+      padding: 12px 30px;
+      font-size: var(--font-size-md);
+    }
+    
+    .btn-sm {
+      padding: 6px 15px;
+      font-size: var(--font-size-xs);
+    }
+    
+    .add-to-cart-btn, .details-btn {
+      padding: 6px 12px;
+      font-size: var(--font-size-xs);
+    }
+  }
