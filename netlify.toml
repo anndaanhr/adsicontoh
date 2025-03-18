@@ -1,0 +1,15 @@
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build]
+  publish = "/"
+
+[images]
+  remote_images = [
+    "https://via.placeholder.com/*/*",
+    "https://cdn-icons-png.flaticon.com/*",
+    "https://same-assets.com/*",
+    "https://ext.same-assets.com/*"
+  ]
