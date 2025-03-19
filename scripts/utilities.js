@@ -107,12 +107,64 @@ function handleImageError(img, fallbackText) {
     }, duration);
   }
   
-  // Export utilities to window object
-  window.zafagoUtils = {
-    handleImageError,
-    setupImageErrorHandlers,
-    formatPrice,
-    generateRedemptionCode,
-    debounce,
-    showToast
-  };
+/**
+ * Zafago Utilities - Common helper functions
+ * (Existing content preserved, adding theme functionality)
+ */
+
+// ... (your existing utilities.js code: handleImageError, formatPrice, etc.) ...
+
+// Theme toggle function
+function toggleTheme() {
+  const body = document.body;
+  const isLightMode = body.classList.contains('light-mode');
+  
+  if (isLightMode) {
+      body.classList.remove('light-mode');
+      localStorage.setItem('theme', 'dark');
+      document.getElementById('theme-toggle').textContent = 'Switch to Light Mode';
+  } else {
+      body.classList.add('light-mode');
+      localStorage.setItem('theme', 'light');
+      document.getElementById('theme-toggle').textContent = 'Switch to Dark Mode';
+  }
+}
+
+// Initialize theme based on localStorage
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  const body = document.body;
+  
+  if (savedTheme === 'light') {
+      body.classList.add('light-mode');
+      document.getElementById('theme-toggle').textContent = 'Switch to Dark Mode';
+  } else {
+      body.classList.remove('light-mode'); // Ensure dark mode is default
+      document.getElementById('theme-toggle').textContent = 'Switch to Light Mode';
+  }
+}
+
+// Setup theme toggle event listener
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme(); // Set initial theme
+  
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', toggleTheme);
+  }
+  
+  // Existing utility setup calls
+  setupImageErrorHandlers();
+});
+
+// Export utilities to window object (adding theme functions)
+window.zafagoUtils = {
+  handleImageError,
+  setupImageErrorHandlers,
+  formatPrice,
+  generateRedemptionCode,
+  debounce,
+  showToast,
+  toggleTheme,  // Expose toggleTheme if other scripts need it
+  initTheme     // Expose initTheme if needed
+};
