@@ -109,14 +109,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Show loader initially
             const pageLoader = document.getElementById('page-loader');
+            
+            // FIX: Handle loader hiding properly
             if (pageLoader) {
-                // Hide loader after content loads
-                window.addEventListener('load', () => {
-                    pageLoader.style.opacity = '0';
-                    setTimeout(() => {
-                        pageLoader.style.display = 'none';
-                    }, 500);
-                });
+                // Hide loader immediately after DOM content is loaded
+                pageLoader.style.opacity = '0';
+                setTimeout(() => {
+                    pageLoader.style.display = 'none';
+                }, 500);
             }
 
             const cartItemsDiv = document.getElementById('cart-items');
@@ -357,9 +357,19 @@
                 window.location.href = 'checkout.html';
             }
 
+            // Set theme
+            const currentMode = localStorage.getItem('theme') || 'dark';
+            document.body.classList.toggle('light-mode', currentMode === 'light');
+
             // Load games data and refresh cart
             loadRecommendedGames();
             refreshCart();
+
+            // Handle theme changes
+            document.addEventListener('themeChange', () => {
+                const newMode = localStorage.getItem('theme') || 'dark';
+                document.body.classList.toggle('light-mode', newMode === 'light');
+            });
         });
     </script>
 </body>
